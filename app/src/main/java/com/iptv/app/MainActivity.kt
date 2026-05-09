@@ -1,11 +1,15 @@
 package com.iptv.app
+
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.material3.Text
-class MainActivity : ComponentActivity() {
+import androidx.appcompat.app.AppCompatActivity
+import android.widget.TextView
+
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { Text("IPTV SYSTEM ONLINE") }
+        val tv = TextView(this)
+        tv.text = "IPTV App: System Go"
+        setContentView(tv)
     }
 }
+
