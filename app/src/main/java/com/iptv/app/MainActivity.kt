@@ -8,8 +8,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val tv = TextView(this)
-        tv.text = "IPTV App: System Go"
+        tv.text = "IPTV App: Online"
         setContentView(tv)
     }
 }
+
 
