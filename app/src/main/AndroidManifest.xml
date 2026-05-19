@@ -10,7 +10,7 @@
         android:allowBackup="true"
         android:label="MyIPTV TV"
         android:icon="@android:drawable/sym_def_app_icon"
-        android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+        android:theme="@style/Theme.Leanback">
         
         <activity
             android:name=".MainActivity"
