@@ -240,8 +240,8 @@ class MainActivity : FragmentActivity() {
                     clipChildren = false
                     clipToPadding = false
                     layoutParams = LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT
                     )
                 }
 
