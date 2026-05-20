@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.HorizontalScrollView
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
@@ -19,10 +20,7 @@ class MainActivity : FragmentActivity() {
     private lateinit var sidebar: LinearLayout
     private lateinit var contentArea: LinearLayout
     
-    // Minimalist emoji glyph vector fallbacks (Replacing text completely)
-    private val menuIcons = listOf("📺", "🎬", "🍿", "⚙️")
-    private val sidebarViews = mutableListOf<TextView>()
-    
+    private val sidebarViews = mutableListOf<View>()
     private val sectionContainers = mutableListOf<LinearLayout>()
     private val movieRows = mutableListOf<LinearLayout>()
     
@@ -42,36 +40,41 @@ class MainActivity : FragmentActivity() {
             )
         }
 
-        // Slim, clean semi-transparent sidebar configuration block
         sidebar = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
             setPadding(10, 0, 10, 0)
-            setBackgroundColor(android.graphics.Color.parseColor("#CC080D1A")) // 80% Translucent cinematic overlay
-            layoutParams = LinearLayout.LayoutParams(160, LinearLayout.LayoutParams.MATCH_PARENT)
+            setBackgroundColor(android.graphics.Color.parseColor("#CC080D1A"))
+            layoutParams = LinearLayout.LayoutParams(140, LinearLayout.LayoutParams.MATCH_PARENT)
             isVerticalScrollBarEnabled = false
         }
 
-        menuIcons.forEachIndexed { index, iconGlyph ->
-            val menuItem = TextView(this).apply {
-                text = iconGlyph
-                textSize = 26f
-                setTextColor(android.graphics.Color.parseColor("#4E5B7C"))
+        val iconDrawables = listOf(
+            createTvVectorIcon(),
+            createMovieVectorIcon(),
+            createSeriesVectorIcon(),
+            createSettingsVectorIcon()
+        )
+
+        iconDrawables.forEachIndexed { index, drawable ->
+            val menuIconContainer = ImageView(this).apply {
+                setImageDrawable(drawable)
                 setPadding(0, 45, 0, 45)
                 isFocusable = true
                 isFocusableInTouchMode = true
-                gravity = Gravity.CENTER
-                background = null // Strips out default text lines/borders
+                layoutParams = LinearLayout.LayoutParams(100, 150).apply {
+                    gravity = Gravity.CENTER_HORIZONTAL
+                }
 
                 setOnFocusChangeListener { view, hasFocus ->
                     if (hasFocus) {
-                        setTextColor(android.graphics.Color.WHITE)
+                        setColorFilter(android.graphics.Color.WHITE)
                         view.scaleX = 1.15f
                         view.scaleY = 1.15f
                         lastActiveMenuIndex = index
                         updateContentArea(index)
                     } else {
-                        setTextColor(android.graphics.Color.parseColor("#4E5B7C"))
+                        setColorFilter(android.graphics.Color.parseColor("#4E5B7C"))
                         view.scaleX = 1.0f
                         view.scaleY = 1.0f
                     }
@@ -86,8 +89,8 @@ class MainActivity : FragmentActivity() {
                     }
                 }
             }
-            sidebar.addView(menuItem)
-            sidebarViews.add(menuItem)
+            sidebar.addView(menuIconContainer)
+            sidebarViews.add(menuIconContainer)
         }
 
         contentArea = LinearLayout(this).apply {
@@ -107,10 +110,67 @@ class MainActivity : FragmentActivity() {
         sidebarViews.firstOrNull()?.requestFocus()
     }
 
+    private fun createTvVectorIcon(): android.graphics.drawable.Drawable {
+        return android.graphics.drawable.ShapeDrawable(object : android.graphics.drawable.shapes.Shape() {
+            override fun draw(canvas: android.graphics.Canvas, paint: android.graphics.Paint) {
+                paint.color = android.graphics.Color.WHITE
+                paint.style = android.graphics.Paint.Style.STROKE
+                paint.strokeWidth = 5f
+                canvas.drawRoundRect(15f, 25f, 85f, 75f, 8f, 8f, paint)
+                canvas.drawLine(35f, 75f, 25f, 90f, paint)
+                canvas.drawLine(65f, 75f, 75f, 90f, paint)
+            }
+        })
+    }
+
+    private fun createMovieVectorIcon(): android.graphics.drawable.Drawable {
+        return android.graphics.drawable.ShapeDrawable(object : android.graphics.drawable.shapes.Shape() {
+            override fun draw(canvas: android.graphics.Canvas, paint: android.graphics.Paint) {
+                paint.color = android.graphics.Color.WHITE
+                paint.style = android.graphics.Paint.Style.STROKE
+                paint.strokeWidth = 5f
+                canvas.drawRoundRect(15f, 20f, 85f, 80f, 6f, 6f, paint)
+                canvas.drawLine(15f, 42f, 85f, 42f, paint)
+                canvas.drawLine(35f, 20f, 45f, 42f, paint)
+                canvas.drawLine(60f, 20f, 70f, 42f, paint)
+            }
+        })
+    }
+
+    private fun createSeriesVectorIcon(): android.graphics.drawable.Drawable {
+        return android.graphics.drawable.ShapeDrawable(object : android.graphics.drawable.shapes.Shape() {
+            override fun draw(canvas: android.graphics.Canvas, paint: android.graphics.Paint) {
+                paint.color = android.graphics.Color.WHITE
+                paint.style = android.graphics.Paint.Style.STROKE
+                paint.strokeWidth = 5f
+                canvas.drawRoundRect(10f, 35f, 70f, 85f, 10f, 10f, paint)
+                canvas.drawRoundRect(30f, 15f, 90f, 65f, 10f, 10f, paint)
+            }
+        })
+    }
+
+    private fun createSettingsVectorIcon(): android.graphics.drawable.Drawable {
+        return android.graphics.drawable.ShapeDrawable(object : android.graphics.drawable.shapes.Shape() {
+            override fun draw(canvas: android.graphics.Canvas, paint: android.graphics.Paint) {
+                paint.color = android.graphics.Color.WHITE
+                paint.style = android.graphics.Paint.Style.STROKE
+                paint.strokeWidth = 5f
+                canvas.drawCircle(50f, 50f, 22f, paint)
+                canvas.drawCircle(50f, 50f, 7f, paint)
+                for (i in 0..360 step 45) {
+                    val angle = Math.toRadians(i.toDouble())
+                    val x1 = (50 + Math.cos(angle) * 22).toFloat()
+                    val y1 = (50 + Math.sin(angle) * 22).toFloat()
+                    val x2 = (50 + Math.cos(angle) * 32).toFloat()
+                    val y2 = (50 + Math.sin(angle) * 32).toFloat()
+                    canvas.drawLine(x1, y1, x2, y2, paint)
+                }
+            }
+        })
+    }
+
     private fun hideSidebarLayout() {
-        sidebar.visibility = View.GONE // Navbar vanishes instantly when browsing categories
-        
-        // Dynamic Force Routing: Snap target directly to the first element card asset item
+        sidebar.visibility = View.GONE
         if (currentFocusedRowIndex in movieRows.indices && movieRows[currentFocusedRowIndex].childCount > 0) {
             movieRows[currentFocusedRowIndex].getChildAt(0).requestFocus()
         } else if (movieRows.isNotEmpty() && movieRows[0].childCount > 0) {
@@ -119,7 +179,7 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun showSidebarLayout() {
-        sidebar.visibility = View.VISIBLE // Re-reveal sidebar menu interface container frame
+        sidebar.visibility = View.VISIBLE
         if (lastActiveMenuIndex in sidebarViews.indices) {
             sidebarViews[lastActiveMenuIndex].requestFocus()
         }
@@ -132,7 +192,6 @@ class MainActivity : FragmentActivity() {
         sectionContainers.clear()
         currentFocusedRowIndex = 0
 
-        // Pushes categories safely to the bottom lower hemisphere grid
         val topSpacer = View(this).apply {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -185,8 +244,8 @@ class MainActivity : FragmentActivity() {
                 val horizontalScroll = HorizontalScrollView(this).apply {
                     isHorizontalScrollBarEnabled = false
                     isVerticalScrollBarEnabled = false
-                    setPadding(0, 25, 0, 25) // Top-and-bottom padding buffer zone protection
-                    clipToPadding = false    // Prevents parent from chopping scaled poster cards
+                    setPadding(0, 25, 0, 25) 
+                    clipToPadding = false    
                 }
                 val rowItemsContainer = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
 
@@ -227,27 +286,26 @@ class MainActivity : FragmentActivity() {
                             }
                         }
 
-                        // HARD ANCHORED FOCUS OVERRIDES
                         setOnKeyListener { _, keyCode, event ->
                             if (event.action == KeyEvent.ACTION_DOWN) {
                                 when (keyCode) {
                                     KeyEvent.KEYCODE_DPAD_LEFT -> {
                                         if (i == 1) {
-                                            showSidebarLayout() // Instant, single-click return path to menu!
+                                            showSidebarLayout()
                                             return@setOnKeyListener true
                                         }
                                     }
                                     KeyEvent.KEYCODE_DPAD_DOWN -> {
                                         if (rowIndex < sections.size - 1) {
                                             isolateFocusedRow(rowIndex + 1)
-                                            movieRows[rowIndex + 1].getChildAt(0).requestFocus() // Snap directly to index 0 tile
+                                            movieRows[rowIndex + 1].getChildAt(0).requestFocus()
                                             return@setOnKeyListener true
                                         }
                                     }
                                     KeyEvent.KEYCODE_DPAD_UP -> {
                                         if (rowIndex > 0) {
                                             isolateFocusedRow(rowIndex - 1)
-                                            movieRows[rowIndex - 1].getChildAt(0).requestFocus() // Snap directly to index 0 tile
+                                            movieRows[rowIndex - 1].getChildAt(0).requestFocus()
                                             return@setOnKeyListener true
                                         }
                                     }
@@ -356,7 +414,22 @@ class MainActivity : FragmentActivity() {
                 return true
             }
 
+            // BACK BUTTON ESCAPE ROUTE MANAGEMENT ENGINE
             if (sidebar.visibility == View.GONE) {
+                if (currentFocusedRowIndex in movieRows.indices) {
+                    val currentRowContainer = movieRows[currentFocusedRowIndex]
+                    if (currentRowContainer.childCount > 0) {
+                        val firstTile = currentRowContainer.getChildAt(0)
+                        
+                        // Condition A: If the first tile isn't focused yet, bounce focus directly to it!
+                        if (!firstTile.isFocused) {
+                            firstTile.requestFocus()
+                            return true
+                        }
+                    }
+                }
+                
+                // Condition B: If we're already on the first tile, slide open the sidebar menu
                 showSidebarLayout()
                 return true
             }
