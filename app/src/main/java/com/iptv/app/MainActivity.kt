@@ -1,45 +1,58 @@
 package com.iptv.app
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerView
+import android.widget.Toast
+import androidx.fragment.app.FragmentActivity
+import androidx.leanback.app.VerticalGridSupportFragment
+import androidx.leanback.widget.ArrayObjectAdapter
+import androidx.leanback.widget.VerticalGridPresenter
+import androidx.leanback.widget.HeaderItem
+import androidx.leanback.widget.ListRow
 
-class MainActivity : AppCompatActivity() {
-
-    private var player: ExoPlayer? = null
-    private var playerView: PlayerView? = null
+class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Create a root layout container dynamically
+        val container = android.widget.FrameLayout(this).apply {
+            id = android.view.View.generateViewId()
+        }
+        setContentView(container)
 
-        // Create the video view container
-        playerView = PlayerView(this)
-        setContentView(playerView)
-
-        // Initialize engine safely
-        player = ExoPlayer.Builder(this).build().apply {
-            playerView?.player = this
-            
-            // Public open-source test stream URL
-            val videoUrl = "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-            val mediaItem = MediaItem.fromUri(videoUrl)
-            
-            setMediaItem(mediaItem)
-            prepare()
-            playWhenReady = true
+        // Inject a clean Leanback grid fragment shell
+        if (savedInstanceState == null) {
+            val gridFragment = MainMenuFragment()
+            supportFragmentManager.beginTransaction()
+                .replace(container.id, gridFragment)
+                .commit()
         }
     }
+}
 
-    override fun onStop() {
-        super.onStop()
-        player?.pause()
-    }
+class MainMenuFragment : VerticalGridSupportFragment() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        
+        title = "MyIPTV - NextGen TV"
+        
+        // Set up a clean 2-column grid layout configuration
+        val gridPresenter = VerticalGridPresenter().apply {
+            numberOfColumns = 2
+        }
+        setGridPresenter(gridPresenter)
 
-    override fun onDestroy() {
-        super.onDestroy()
-        player?.release()
-        player = null
+        // Add placeholder menu tiles to verify the TV rendering shell is fully working
+        val adapter = ArrayObjectAdapter(androidx.leanback.widget.StringPresenter())
+        adapter.add("📺 Live TV (Xtream/Stalker Codes)")
+        adapter.add("🎬 Movies (TorBox Debrid Link)")
+        adapter.add("🍿 TV Series (Cached Torrents)")
+        adapter.add("⚙️ Settings (Top Navigation Bar)")
+        
+        this.adapter = adapter
+
+        setOnItemViewClickedListener { _, item, _, _ ->
+            Toast.makeText(activity, "Clicked: $item", Toast.LENGTH_SHORT).show()
+        }
     }
 }
