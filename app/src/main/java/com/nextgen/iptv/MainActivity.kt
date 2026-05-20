@@ -42,45 +42,45 @@ class MainActivity : FragmentActivity() {
             )
         }
 
-        // Sidebar container without any default border strip rules
+        // FIXED: Menu bar is now 100% transparent with extra spacing padding for breathing room
         sidebar = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
-            setPadding(15, 0, 15, 0)
-            setBackgroundColor(android.graphics.Color.parseColor("#CC080D1A")) 
-            layoutParams = LinearLayout.LayoutParams(140, LinearLayout.LayoutParams.MATCH_PARENT)
+            setPadding(25, 0, 25, 0)
+            setBackgroundColor(android.graphics.Color.TRANSPARENT) 
+            layoutParams = LinearLayout.LayoutParams(160, LinearLayout.LayoutParams.MATCH_PARENT)
             isVerticalScrollBarEnabled = false
             clipChildren = false
             clipToPadding = false
         }
 
-        // Native platform system icons that load instantly without asset linkage bugs
+        // Safe platform vectors that compile seamlessly and support direct hardware tinting
         val systemIcons = listOf(
-            android.R.drawable.ic_menu_slideshow,  // Live TV
+            android.R.drawable.ic_media_play,     // Live TV
             android.R.drawable.ic_menu_gallery,    // Movies
-            android.R.drawable.ic_menu_compass,    // TV Series
+            android.R.drawable.ic_menu_slideshow,  // TV Series
             android.R.drawable.ic_menu_manage     // Settings
         )
 
         systemIcons.forEachIndexed { index, resId ->
             val menuIconContainer = ImageView(this).apply {
                 setImageResource(resId)
-                setPadding(0, 40, 0, 40)
+                setPadding(0, 35, 0, 35)
                 isFocusable = true
                 isFocusableInTouchMode = true
                 
-                // Safe default unselected slate color
+                // Pure clean menu text slate color
                 setColorFilter(android.graphics.Color.parseColor("#495573"))
-                layoutParams = LinearLayout.LayoutParams(90, 130).apply {
+                layoutParams = LinearLayout.LayoutParams(80, 120).apply {
                     gravity = Gravity.CENTER_HORIZONTAL
                 }
 
                 setOnFocusChangeListener { view, hasFocus ->
                     if (hasFocus) {
-                        // High-contrast clean white accent zoom on focus without the white side line
+                        // Clean focus effect: Pop the white color and scale smoothly without drawing any lines
                         (view as ImageView).setColorFilter(android.graphics.Color.WHITE)
-                        view.scaleX = 1.25f
-                        view.scaleY = 1.25f
+                        view.scaleX = 1.3f
+                        view.scaleY = 1.3f
                         lastActiveMenuIndex = index
                         updateContentArea(index)
                     } else {
@@ -106,7 +106,7 @@ class MainActivity : FragmentActivity() {
         contentArea = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.BOTTOM 
-            setPadding(60, 10, 60, 10)
+            setPadding(40, 10, 60, 10) // Adjusted left padding to balance out the transparent sidebar
             clipChildren = false 
             clipToPadding = false
             layoutParams = LinearLayout.LayoutParams(
@@ -119,7 +119,7 @@ class MainActivity : FragmentActivity() {
         mainLayout.addView(contentArea)
         setContentView(mainLayout)
 
-        // Default focus to the Movies category view link
+        // Request initial focus directly onto Movies category item row
         sidebarViews.getOrNull(1)?.requestFocus()
     }
 
