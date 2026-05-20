@@ -240,8 +240,8 @@ class MainActivity : FragmentActivity() {
                     clipChildren = false
                     clipToPadding = false
                     layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
                     )
                 }
 
@@ -267,7 +267,7 @@ class MainActivity : FragmentActivity() {
             return
         }
 
-        val url = "https://api.themoviedb.org/3/$endpoint?api_key=$tmdbApiKey&language=en-US&page=1"
+        val url = "https://api.themoviedb.org/3/" + endpoint + "?api_key=" + tmdbApiKey + "&language=en-US&page=1"
         val request = Request.Builder().url(url).build()
 
         httpClient.newCall(request).enqueue(object : Callback {
@@ -328,7 +328,7 @@ class MainActivity : FragmentActivity() {
                     )
                     scaleType = ImageView.ScaleType.CENTER_CROP
                     
-                    val posterUrl = "https://image.tmdb.org/t/p/w342${mediaItem.posterPath}"
+                    val posterUrl = "https://image.tmdb.org/t/p/w342" + mediaItem.posterPath
                     load(posterUrl) {
                         crossfade(true)
                         transformations(RoundedCornersTransformation(14f))
@@ -457,7 +457,7 @@ class MainActivity : FragmentActivity() {
             }
 
             setOnClickListener {
-                Toast.makeText(this@MainActivity, "Querying TorBox Stream Links for ${titleView.text}...", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, "Querying TorBox Stream Links for " + titleView.text + "...", Toast.LENGTH_SHORT).show()
             }
         }
 
