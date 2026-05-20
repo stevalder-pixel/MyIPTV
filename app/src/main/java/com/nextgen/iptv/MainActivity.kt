@@ -18,7 +18,9 @@ class MainActivity : FragmentActivity() {
     private lateinit var mainLayout: LinearLayout
     private lateinit var sidebar: LinearLayout
     private lateinit var contentArea: LinearLayout
-    private val menuItems = listOf("Live TV", "Movies", "TV Series", "Settings")
+    
+    // Minimalist emoji glyph vector fallbacks (Replacing text completely)
+    private val menuIcons = listOf("📺", "🎬", "🍿", "⚙️")
     private val sidebarViews = mutableListOf<TextView>()
     
     private val sectionContainers = mutableListOf<LinearLayout>()
@@ -40,35 +42,36 @@ class MainActivity : FragmentActivity() {
             )
         }
 
+        // Slim, clean semi-transparent sidebar configuration block
         sidebar = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER_VERTICAL
-            setPadding(25, 0, 25, 0)
-            setBackgroundColor(android.graphics.Color.parseColor("#080D1A"))
-            layoutParams = LinearLayout.LayoutParams(340, LinearLayout.LayoutParams.MATCH_PARENT)
+            gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
+            setPadding(10, 0, 10, 0)
+            setBackgroundColor(android.graphics.Color.parseColor("#CC080D1A")) // 80% Translucent cinematic overlay
+            layoutParams = LinearLayout.LayoutParams(160, LinearLayout.LayoutParams.MATCH_PARENT)
             isVerticalScrollBarEnabled = false
         }
 
-        menuItems.forEachIndexed { index, title ->
+        menuIcons.forEachIndexed { index, iconGlyph ->
             val menuItem = TextView(this).apply {
-                text = title
-                textSize = 20f
-                setTextColor(android.graphics.Color.parseColor("#5A6785"))
-                setPadding(50, 35, 40, 35)
+                text = iconGlyph
+                textSize = 26f
+                setTextColor(android.graphics.Color.parseColor("#4E5B7C"))
+                setPadding(0, 45, 0, 45)
                 isFocusable = true
                 isFocusableInTouchMode = true
-                gravity = Gravity.CENTER_VERTICAL
-                background = null
+                gravity = Gravity.CENTER
+                background = null // Strips out default text lines/borders
 
                 setOnFocusChangeListener { view, hasFocus ->
                     if (hasFocus) {
                         setTextColor(android.graphics.Color.WHITE)
-                        view.scaleX = 1.05f
-                        view.scaleY = 1.05f
+                        view.scaleX = 1.15f
+                        view.scaleY = 1.15f
                         lastActiveMenuIndex = index
                         updateContentArea(index)
                     } else {
-                        setTextColor(android.graphics.Color.parseColor("#5A6785"))
+                        setTextColor(android.graphics.Color.parseColor("#4E5B7C"))
                         view.scaleX = 1.0f
                         view.scaleY = 1.0f
                     }
@@ -90,7 +93,7 @@ class MainActivity : FragmentActivity() {
         contentArea = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.BOTTOM 
-            setPadding(80, 40, 80, 40)
+            setPadding(60, 40, 60, 40)
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
@@ -105,10 +108,9 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun hideSidebarLayout() {
-        sidebar.layoutParams.width = 0
-        sidebar.requestLayout()
+        sidebar.visibility = View.GONE // Navbar vanishes instantly when browsing categories
         
-        // FIX: Directly forces absolute focus on the exact 1st child card element, killing the dead-zone padding bug
+        // Dynamic Force Routing: Snap target directly to the first element card asset item
         if (currentFocusedRowIndex in movieRows.indices && movieRows[currentFocusedRowIndex].childCount > 0) {
             movieRows[currentFocusedRowIndex].getChildAt(0).requestFocus()
         } else if (movieRows.isNotEmpty() && movieRows[0].childCount > 0) {
@@ -117,8 +119,7 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun showSidebarLayout() {
-        sidebar.layoutParams.width = 340
-        sidebar.requestLayout()
+        sidebar.visibility = View.VISIBLE // Re-reveal sidebar menu interface container frame
         if (lastActiveMenuIndex in sidebarViews.indices) {
             sidebarViews[lastActiveMenuIndex].requestFocus()
         }
@@ -131,6 +132,7 @@ class MainActivity : FragmentActivity() {
         sectionContainers.clear()
         currentFocusedRowIndex = 0
 
+        // Pushes categories safely to the bottom lower hemisphere grid
         val topSpacer = View(this).apply {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -180,18 +182,17 @@ class MainActivity : FragmentActivity() {
                 }
                 rowWrapper.addView(rowLabel)
 
-                // FIX: Added explicit top/bottom padding to parent horizontal container view scroll workspace
                 val horizontalScroll = HorizontalScrollView(this).apply {
                     isHorizontalScrollBarEnabled = false
                     isVerticalScrollBarEnabled = false
-                    setPadding(0, 25, 0, 25) // This provides the padding safety margin to prevent chopped cards
-                    clipToPadding = false    // Allows rendering assets smoothly inside the padding bounds
+                    setPadding(0, 25, 0, 25) // Top-and-bottom padding buffer zone protection
+                    clipToPadding = false    // Prevents parent from chopping scaled poster cards
                 }
                 val rowItemsContainer = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
 
                 for (i in 1..8) {
                     val card = TextView(this).apply {
-                        text = "Media Card $i"
+                        text = "Media Card \$i"
                         textSize = 14f
                         setTextColor(android.graphics.Color.parseColor("#8E9CB3"))
                         gravity = Gravity.CENTER
@@ -226,27 +227,27 @@ class MainActivity : FragmentActivity() {
                             }
                         }
 
+                        // HARD ANCHORED FOCUS OVERRIDES
                         setOnKeyListener { _, keyCode, event ->
                             if (event.action == KeyEvent.ACTION_DOWN) {
                                 when (keyCode) {
                                     KeyEvent.KEYCODE_DPAD_LEFT -> {
-                                        // FIX: Instant zero-delay return path from the very first card item
                                         if (i == 1) {
-                                            showSidebarLayout()
+                                            showSidebarLayout() // Instant, single-click return path to menu!
                                             return@setOnKeyListener true
                                         }
                                     }
                                     KeyEvent.KEYCODE_DPAD_DOWN -> {
                                         if (rowIndex < sections.size - 1) {
                                             isolateFocusedRow(rowIndex + 1)
-                                            movieRows[rowIndex + 1].getChildAt(0).requestFocus()
+                                            movieRows[rowIndex + 1].getChildAt(0).requestFocus() // Snap directly to index 0 tile
                                             return@setOnKeyListener true
                                         }
                                     }
                                     KeyEvent.KEYCODE_DPAD_UP -> {
                                         if (rowIndex > 0) {
                                             isolateFocusedRow(rowIndex - 1)
-                                            movieRows[rowIndex - 1].getChildAt(0).requestFocus()
+                                            movieRows[rowIndex - 1].getChildAt(0).requestFocus() // Snap directly to index 0 tile
                                             return@setOnKeyListener true
                                         }
                                     }
@@ -292,14 +293,10 @@ class MainActivity : FragmentActivity() {
         isDisplayingDetails = true
         contentArea.removeAllViews()
 
-        // FIX: Rebuilt layout constraints to format cleanly as a Left-Panel focused info slate block
         val detailLayout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
-            layoutParams = LinearLayout.LayoutParams(
-                650, // Constrained width keeping metadata anchored beautifully on the left display margins
-                LinearLayout.LayoutParams.MATCH_PARENT
-            )
+            layoutParams = LinearLayout.LayoutParams(650, LinearLayout.LayoutParams.MATCH_PARENT)
             setPadding(30, 20, 20, 20)
         }
 
@@ -359,7 +356,7 @@ class MainActivity : FragmentActivity() {
                 return true
             }
 
-            if (sidebar.layoutParams.width == 0) {
+            if (sidebar.visibility == View.GONE) {
                 showSidebarLayout()
                 return true
             }
