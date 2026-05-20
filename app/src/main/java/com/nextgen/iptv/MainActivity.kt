@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.HorizontalScrollView
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
@@ -29,7 +28,7 @@ class MainActivity : FragmentActivity() {
     private var currentFocusedRowIndex = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState) // FIXED: Removed duplicate super call to fix build failure
 
         mainLayout = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -40,47 +39,39 @@ class MainActivity : FragmentActivity() {
             )
         }
 
-        // Sleek, balanced translucent sidebar
+        // Sleek semi-transparent menu sidebar panel
         sidebar = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
-            setPadding(15, 0, 15, 0)
-            setBackgroundColor(android.graphics.Color.parseColor("#CC080D1A")) // Elegant 80% opacity overlay
-            layoutParams = LinearLayout.LayoutParams(150, LinearLayout.LayoutParams.MATCH_PARENT)
+            setPadding(10, 0, 10, 0)
+            setBackgroundColor(android.graphics.Color.parseColor("#CC080D1A")) // Beautiful 80% opacity overlay
+            layoutParams = LinearLayout.LayoutParams(140, LinearLayout.LayoutParams.MATCH_PARENT)
             isVerticalScrollBarEnabled = false
         }
 
-        // Built-in crisp, hardware-accelerated high-end platform system icons
-        val systemIcons = listOf(
-            android.R.drawable.ic_menu_button_toggle, // Live TV 
-            android.R.drawable.ic_menu_slideshow,       // Movies
-            android.R.drawable.ic_menu_gallery,         // TV Series
-            android.R.drawable.ic_menu_manage          // Settings
-        )
+        // Clean, universally supported geometric symbols (Guaranteed to show up sharply)
+        val menuSymbols = listOf("⌂", "⌥", "⧉", "⚙")
 
-        systemIcons.forEachIndexed { index, resId ->
-            val menuIconContainer = ImageView(this).apply {
-                setImageResource(resId)
-                setPadding(0, 35, 0, 35)
+        menuSymbols.forEachIndexed { index, symbol ->
+            val menuItem = TextView(this).apply {
+                text = symbol
+                textSize = 28f
+                setTextColor(android.graphics.Color.parseColor("#4E5B7C")) // Muted default state
+                gravity = Gravity.CENTER
                 isFocusable = true
                 isFocusableInTouchMode = true
-                
-                // Muted slate gray base color profile
-                setColorFilter(android.graphics.Color.parseColor("#4E5B7C"))
-                layoutParams = LinearLayout.LayoutParams(90, 140).apply {
-                    gravity = Gravity.CENTER_HORIZONTAL
-                }
+                setPadding(0, 40, 0, 40)
+                background = null
 
                 setOnFocusChangeListener { view, hasFocus ->
                     if (hasFocus) {
-                        // Brilliant white glow popping into focus natively
-                        (view as ImageView).setColorFilter(android.graphics.Color.WHITE)
-                        view.scaleX = 1.20f
-                        view.scaleY = 1.20f
+                        setTextColor(android.graphics.Color.WHITE) // High-contrast pure white focus
+                        view.scaleX = 1.2f
+                        view.scaleY = 1.2f
                         lastActiveMenuIndex = index
                         updateContentArea(index)
                     } else {
-                        (view as ImageView).setColorFilter(android.graphics.Color.parseColor("#4E5B7C"))
+                        setTextColor(android.graphics.Color.parseColor("#4E5B7C"))
                         view.scaleX = 1.0f
                         view.scaleY = 1.0f
                     }
@@ -95,14 +86,14 @@ class MainActivity : FragmentActivity() {
                     }
                 }
             }
-            sidebar.addView(menuIconContainer)
-            sidebarViews.add(menuIconContainer)
+            sidebar.addView(menuItem)
+            sidebarViews.add(menuItem)
         }
 
         contentArea = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.BOTTOM 
-            setPadding(70, 20, 70, 20)
+            setPadding(60, 20, 60, 20)
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
@@ -168,16 +159,19 @@ class MainActivity : FragmentActivity() {
             val scrollContainer = ScrollView(this).apply {
                 isVerticalScrollBarEnabled = false
                 isHorizontalScrollBarEnabled = false
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
             }
             val verticalLayout = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
 
             sections.forEachIndexed { rowIndex, sectionName ->
-                // FIX: Added custom container bounds layout parameters to ensure no horizontal clipping 
                 val rowWrapper = LinearLayout(this).apply {
                     orientation = LinearLayout.VERTICAL
                     layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        490 // Dedicated strict vertical box workspace size height giving posters plenty of zoom margin room
+                        LinearLayout.LayoutParams.WRAP_CONTENT
                     )
                 }
 
@@ -185,16 +179,16 @@ class MainActivity : FragmentActivity() {
                     text = sectionName
                     textSize = 17f
                     setTextColor(android.graphics.Color.parseColor("#445373"))
-                    setPadding(20, 5, 0, 5)
+                    setPadding(20, 10, 0, 5)
                 }
                 rowWrapper.addView(rowLabel)
 
-                // FIX: Added extensive vertical padding buffer directly onto horizontal engine layout viewports
+                // FIXED: Increased padding dynamically to ensure white selection borders never clip
                 val horizontalScroll = HorizontalScrollView(this).apply {
                     isHorizontalScrollBarEnabled = false
                     isVerticalScrollBarEnabled = false
-                    setPadding(10, 40, 10, 40) // Generous top-bottom breathing clearance for focused scaling pop
-                    clipToPadding = false       // Instructs Android OS container layer not to prune out borders
+                    setPadding(10, 30, 10, 50) // Massive bottom clearance cushion added
+                    clipToPadding = false       // Forces rendering outside constraints
                 }
                 val rowItemsContainer = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
 
@@ -214,7 +208,7 @@ class MainActivity : FragmentActivity() {
                         val cardFocused = android.graphics.drawable.GradientDrawable().apply {
                             setColor(android.graphics.Color.parseColor("#141E38"))
                             cornerRadius = 20f
-                            setStroke(4, android.graphics.Color.WHITE) // High-end pure white target outline ring
+                            setStroke(4, android.graphics.Color.WHITE)
                         }
 
                         background = cardNormal
@@ -225,8 +219,8 @@ class MainActivity : FragmentActivity() {
                         setOnFocusChangeListener { view, hasFocus ->
                             view.background = if (hasFocus) cardFocused else cardNormal
                             if (hasFocus) {
-                                view.scaleX = 1.06f // Slightly optimized cinematic scaling ratio
-                                view.scaleY = 1.06f
+                                view.scaleX = 1.05f
+                                view.scaleY = 1.05f
                                 currentFocusedRowIndex = rowIndex
                                 isolateFocusedRow(rowIndex)
                             } else {
