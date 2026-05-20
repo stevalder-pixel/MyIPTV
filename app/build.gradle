@@ -4,21 +4,20 @@ plugins {
 }
 
 android {
-    namespace 'com.iptv.app'
+    namespace 'com.nextgen.iptv'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.iptv.tvappv4"
+        applicationId "com.nextgen.iptv"
         minSdk 26
         targetSdk 34
         versionCode 1
-        versionName "1.0-RELEASE"
+        versionName "1.0"
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            // This safely links to the standard internal android debug signature
             signingConfig signingConfigs.debug
         }
     }
