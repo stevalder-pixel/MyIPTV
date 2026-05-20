@@ -28,7 +28,7 @@ class MainActivity : FragmentActivity() {
     private var currentFocusedRowIndex = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState) // FIXED: Removed duplicate super call to fix build failure
+        super.onCreate(savedInstanceState) // Clean standard initialization syntax
 
         mainLayout = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -39,39 +39,41 @@ class MainActivity : FragmentActivity() {
             )
         }
 
-        // Sleek semi-transparent menu sidebar panel
+        // Deep obsidian semi-translucent sidebar layout matching modern media frameworks
         sidebar = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
-            setPadding(10, 0, 10, 0)
-            setBackgroundColor(android.graphics.Color.parseColor("#CC080D1A")) // Beautiful 80% opacity overlay
-            layoutParams = LinearLayout.LayoutParams(140, LinearLayout.LayoutParams.MATCH_PARENT)
+            setPadding(15, 0, 15, 0)
+            setBackgroundColor(android.graphics.Color.parseColor("#E6070B14")) // Ultra-premium 90% opacity layer
+            layoutParams = LinearLayout.LayoutParams(150, LinearLayout.LayoutParams.MATCH_PARENT)
             isVerticalScrollBarEnabled = false
         }
 
-        // Clean, universally supported geometric symbols (Guaranteed to show up sharply)
-        val menuSymbols = listOf("⌂", "⌥", "⧉", "⚙")
+        // Clean, iconic, high-contrast structural modern interface characters
+        val navigationGlyphs = listOf("☷", "►", "❖", "⚙")
 
-        menuSymbols.forEachIndexed { index, symbol ->
+        navigationGlyphs.forEachIndexed { index, glyph ->
             val menuItem = TextView(this).apply {
-                text = symbol
-                textSize = 28f
-                setTextColor(android.graphics.Color.parseColor("#4E5B7C")) // Muted default state
+                text = glyph
+                textSize = 32f
+                typeface = android.graphics.Typeface.DEFAULT_BOLD
+                setTextColor(android.graphics.Color.parseColor("#495573")) // Distinct unselected structural color
                 gravity = Gravity.CENTER
                 isFocusable = true
                 isFocusableInTouchMode = true
-                setPadding(0, 40, 0, 40)
+                setPadding(0, 35, 0, 35)
                 background = null
 
                 setOnFocusChangeListener { view, hasFocus ->
                     if (hasFocus) {
-                        setTextColor(android.graphics.Color.WHITE) // High-contrast pure white focus
-                        view.scaleX = 1.2f
-                        view.scaleY = 1.2f
+                        // High-luminance highlight state
+                        setTextColor(android.graphics.Color.WHITE)
+                        view.scaleX = 1.25f
+                        view.scaleY = 1.25f
                         lastActiveMenuIndex = index
                         updateContentArea(index)
                     } else {
-                        setTextColor(android.graphics.Color.parseColor("#4E5B7C"))
+                        setTextColor(android.graphics.Color.parseColor("#495573"))
                         view.scaleX = 1.0f
                         view.scaleY = 1.0f
                     }
@@ -93,7 +95,7 @@ class MainActivity : FragmentActivity() {
         contentArea = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.BOTTOM 
-            setPadding(60, 20, 60, 20)
+            setPadding(50, 10, 50, 10)
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
@@ -141,15 +143,16 @@ class MainActivity : FragmentActivity() {
 
         val titleView = TextView(this).apply {
             text = when(menuIndex) {
-                0 -> "Live Streams"
+                0 -> "Live TV Portals"
                 1 -> "Cinematic Movies"
                 2 -> "TV Series"
                 3 -> "Configuration"
                 else -> ""
             }
-            textSize = 34f
+            textSize = 32f
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
             setTextColor(android.graphics.Color.WHITE)
-            setPadding(20, 0, 0, 10)
+            setPadding(20, 0, 0, 15)
         }
         contentArea.addView(titleView)
 
@@ -159,36 +162,35 @@ class MainActivity : FragmentActivity() {
             val scrollContainer = ScrollView(this).apply {
                 isVerticalScrollBarEnabled = false
                 isHorizontalScrollBarEnabled = false
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
             }
             val verticalLayout = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
 
             sections.forEachIndexed { rowIndex, sectionName ->
+                // Structural Box Layout with explicitly defined, safe height guidelines
                 val rowWrapper = LinearLayout(this).apply {
                     orientation = LinearLayout.VERTICAL
                     layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
+                    ).apply {
+                        setMargins(0, 10, 0, 20)
+                    }
                 }
 
                 val rowLabel = TextView(this).apply {
                     text = sectionName
-                    textSize = 17f
-                    setTextColor(android.graphics.Color.parseColor("#445373"))
-                    setPadding(20, 10, 0, 5)
+                    textSize = 16f
+                    setTextColor(android.graphics.Color.parseColor("#4E5B7C"))
+                    setPadding(20, 5, 0, 5)
                 }
                 rowWrapper.addView(rowLabel)
 
-                // FIXED: Increased padding dynamically to ensure white selection borders never clip
+                // High-clearance horizontal view container preventing edge pruning clipping bugs
                 val horizontalScroll = HorizontalScrollView(this).apply {
                     isHorizontalScrollBarEnabled = false
                     isVerticalScrollBarEnabled = false
-                    setPadding(10, 30, 10, 50) // Massive bottom clearance cushion added
-                    clipToPadding = false       // Forces rendering outside constraints
+                    setPadding(10, 35, 10, 45) // Massive layout safety margin buffers
+                    clipToPadding = false       // Allows content expansion overlay
                 }
                 val rowItemsContainer = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
 
@@ -202,25 +204,25 @@ class MainActivity : FragmentActivity() {
                         isFocusableInTouchMode = true
                         
                         val cardNormal = android.graphics.drawable.GradientDrawable().apply {
-                            setColor(android.graphics.Color.parseColor("#0B1121"))
-                            cornerRadius = 20f
+                            setColor(android.graphics.Color.parseColor("#0C1222"))
+                            cornerRadius = 16f
                         }
                         val cardFocused = android.graphics.drawable.GradientDrawable().apply {
-                            setColor(android.graphics.Color.parseColor("#141E38"))
-                            cornerRadius = 20f
+                            setColor(android.graphics.Color.parseColor("#16213E"))
+                            cornerRadius = 16f
                             setStroke(4, android.graphics.Color.WHITE)
                         }
 
                         background = cardNormal
-                        layoutParams = LinearLayout.LayoutParams(260, 370).apply {
-                            setMargins(15, 0, 15, 0)
+                        layoutParams = LinearLayout.LayoutParams(250, 350).apply {
+                            setMargins(15, 5, 15, 5) // Extracted uniform margin boundaries
                         }
 
                         setOnFocusChangeListener { view, hasFocus ->
                             view.background = if (hasFocus) cardFocused else cardNormal
                             if (hasFocus) {
-                                view.scaleX = 1.05f
-                                view.scaleY = 1.05f
+                                view.scaleX = 1.06f // Safe, clean expansion ratio
+                                view.scaleY = 1.06f
                                 currentFocusedRowIndex = rowIndex
                                 isolateFocusedRow(rowIndex)
                             } else {
