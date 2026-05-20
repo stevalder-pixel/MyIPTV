@@ -29,7 +29,7 @@ class MainActivity : FragmentActivity() {
     private var currentFocusedRowIndex = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.super.onCreate(savedInstanceState)
 
         mainLayout = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -40,41 +40,47 @@ class MainActivity : FragmentActivity() {
             )
         }
 
+        // Sleek, balanced translucent sidebar
         sidebar = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
-            setPadding(10, 0, 10, 0)
-            setBackgroundColor(android.graphics.Color.parseColor("#CC080D1A"))
-            layoutParams = LinearLayout.LayoutParams(140, LinearLayout.LayoutParams.MATCH_PARENT)
+            setPadding(15, 0, 15, 0)
+            setBackgroundColor(android.graphics.Color.parseColor("#CC080D1A")) // Elegant 80% opacity overlay
+            layoutParams = LinearLayout.LayoutParams(150, LinearLayout.LayoutParams.MATCH_PARENT)
             isVerticalScrollBarEnabled = false
         }
 
-        val iconDrawables = listOf(
-            createTvVectorIcon(),
-            createMovieVectorIcon(),
-            createSeriesVectorIcon(),
-            createSettingsVectorIcon()
+        // Built-in crisp, hardware-accelerated high-end platform system icons
+        val systemIcons = listOf(
+            android.R.drawable.ic_menu_button_toggle, // Live TV 
+            android.R.drawable.ic_menu_slideshow,       // Movies
+            android.R.drawable.ic_menu_gallery,         // TV Series
+            android.R.drawable.ic_menu_manage          // Settings
         )
 
-        iconDrawables.forEachIndexed { index, drawable ->
+        systemIcons.forEachIndexed { index, resId ->
             val menuIconContainer = ImageView(this).apply {
-                setImageDrawable(drawable)
-                setPadding(0, 45, 0, 45)
+                setImageResource(resId)
+                setPadding(0, 35, 0, 35)
                 isFocusable = true
                 isFocusableInTouchMode = true
-                layoutParams = LinearLayout.LayoutParams(100, 150).apply {
+                
+                // Muted slate gray base color profile
+                setColorFilter(android.graphics.Color.parseColor("#4E5B7C"))
+                layoutParams = LinearLayout.LayoutParams(90, 140).apply {
                     gravity = Gravity.CENTER_HORIZONTAL
                 }
 
                 setOnFocusChangeListener { view, hasFocus ->
                     if (hasFocus) {
-                        setColorFilter(android.graphics.Color.WHITE)
-                        view.scaleX = 1.15f
-                        view.scaleY = 1.15f
+                        // Brilliant white glow popping into focus natively
+                        (view as ImageView).setColorFilter(android.graphics.Color.WHITE)
+                        view.scaleX = 1.20f
+                        view.scaleY = 1.20f
                         lastActiveMenuIndex = index
                         updateContentArea(index)
                     } else {
-                        setColorFilter(android.graphics.Color.parseColor("#4E5B7C"))
+                        (view as ImageView).setColorFilter(android.graphics.Color.parseColor("#4E5B7C"))
                         view.scaleX = 1.0f
                         view.scaleY = 1.0f
                     }
@@ -96,7 +102,7 @@ class MainActivity : FragmentActivity() {
         contentArea = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.BOTTOM 
-            setPadding(60, 40, 60, 40)
+            setPadding(70, 20, 70, 20)
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
@@ -108,65 +114,6 @@ class MainActivity : FragmentActivity() {
         setContentView(mainLayout)
 
         sidebarViews.firstOrNull()?.requestFocus()
-    }
-
-    private fun createTvVectorIcon(): android.graphics.drawable.Drawable {
-        return android.graphics.drawable.ShapeDrawable(object : android.graphics.drawable.shapes.Shape() {
-            override fun draw(canvas: android.graphics.Canvas, paint: android.graphics.Paint) {
-                paint.color = android.graphics.Color.WHITE
-                paint.style = android.graphics.Paint.Style.STROKE
-                paint.strokeWidth = 5f
-                canvas.drawRoundRect(15f, 25f, 85f, 75f, 8f, 8f, paint)
-                canvas.drawLine(35f, 75f, 25f, 90f, paint)
-                canvas.drawLine(65f, 75f, 75f, 90f, paint)
-            }
-        })
-    }
-
-    private fun createMovieVectorIcon(): android.graphics.drawable.Drawable {
-        return android.graphics.drawable.ShapeDrawable(object : android.graphics.drawable.shapes.Shape() {
-            override fun draw(canvas: android.graphics.Canvas, paint: android.graphics.Paint) {
-                paint.color = android.graphics.Color.WHITE
-                paint.style = android.graphics.Paint.Style.STROKE
-                paint.strokeWidth = 5f
-                canvas.drawRoundRect(15f, 20f, 85f, 80f, 6f, 6f, paint)
-                canvas.drawLine(15f, 42f, 85f, 42f, paint)
-                canvas.drawLine(35f, 20f, 45f, 42f, paint)
-                canvas.drawLine(60f, 20f, 70f, 42f, paint)
-            }
-        })
-    }
-
-    private fun createSeriesVectorIcon(): android.graphics.drawable.Drawable {
-        return android.graphics.drawable.ShapeDrawable(object : android.graphics.drawable.shapes.Shape() {
-            override fun draw(canvas: android.graphics.Canvas, paint: android.graphics.Paint) {
-                paint.color = android.graphics.Color.WHITE
-                paint.style = android.graphics.Paint.Style.STROKE
-                paint.strokeWidth = 5f
-                canvas.drawRoundRect(10f, 35f, 70f, 85f, 10f, 10f, paint)
-                canvas.drawRoundRect(30f, 15f, 90f, 65f, 10f, 10f, paint)
-            }
-        })
-    }
-
-    private fun createSettingsVectorIcon(): android.graphics.drawable.Drawable {
-        return android.graphics.drawable.ShapeDrawable(object : android.graphics.drawable.shapes.Shape() {
-            override fun draw(canvas: android.graphics.Canvas, paint: android.graphics.Paint) {
-                paint.color = android.graphics.Color.WHITE
-                paint.style = android.graphics.Paint.Style.STROKE
-                paint.strokeWidth = 5f
-                canvas.drawCircle(50f, 50f, 22f, paint)
-                canvas.drawCircle(50f, 50f, 7f, paint)
-                for (i in 0..360 step 45) {
-                    val angle = Math.toRadians(i.toDouble())
-                    val x1 = (50 + Math.cos(angle) * 22).toFloat()
-                    val y1 = (50 + Math.sin(angle) * 22).toFloat()
-                    val x2 = (50 + Math.cos(angle) * 32).toFloat()
-                    val y2 = (50 + Math.sin(angle) * 32).toFloat()
-                    canvas.drawLine(x1, y1, x2, y2, paint)
-                }
-            }
-        })
     }
 
     private fun hideSidebarLayout() {
@@ -225,11 +172,12 @@ class MainActivity : FragmentActivity() {
             val verticalLayout = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
 
             sections.forEachIndexed { rowIndex, sectionName ->
+                // FIX: Added custom container bounds layout parameters to ensure no horizontal clipping 
                 val rowWrapper = LinearLayout(this).apply {
                     orientation = LinearLayout.VERTICAL
                     layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
+                        490 // Dedicated strict vertical box workspace size height giving posters plenty of zoom margin room
                     )
                 }
 
@@ -237,15 +185,16 @@ class MainActivity : FragmentActivity() {
                     text = sectionName
                     textSize = 17f
                     setTextColor(android.graphics.Color.parseColor("#445373"))
-                    setPadding(20, 10, 0, 10)
+                    setPadding(20, 5, 0, 5)
                 }
                 rowWrapper.addView(rowLabel)
 
+                // FIX: Added extensive vertical padding buffer directly onto horizontal engine layout viewports
                 val horizontalScroll = HorizontalScrollView(this).apply {
                     isHorizontalScrollBarEnabled = false
                     isVerticalScrollBarEnabled = false
-                    setPadding(0, 25, 0, 25) 
-                    clipToPadding = false    
+                    setPadding(10, 40, 10, 40) // Generous top-bottom breathing clearance for focused scaling pop
+                    clipToPadding = false       // Instructs Android OS container layer not to prune out borders
                 }
                 val rowItemsContainer = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
 
@@ -265,7 +214,7 @@ class MainActivity : FragmentActivity() {
                         val cardFocused = android.graphics.drawable.GradientDrawable().apply {
                             setColor(android.graphics.Color.parseColor("#141E38"))
                             cornerRadius = 20f
-                            setStroke(4, android.graphics.Color.WHITE)
+                            setStroke(4, android.graphics.Color.WHITE) // High-end pure white target outline ring
                         }
 
                         background = cardNormal
@@ -276,8 +225,8 @@ class MainActivity : FragmentActivity() {
                         setOnFocusChangeListener { view, hasFocus ->
                             view.background = if (hasFocus) cardFocused else cardNormal
                             if (hasFocus) {
-                                view.scaleX = 1.05f
-                                view.scaleY = 1.05f
+                                view.scaleX = 1.06f // Slightly optimized cinematic scaling ratio
+                                view.scaleY = 1.06f
                                 currentFocusedRowIndex = rowIndex
                                 isolateFocusedRow(rowIndex)
                             } else {
@@ -414,22 +363,17 @@ class MainActivity : FragmentActivity() {
                 return true
             }
 
-            // BACK BUTTON ESCAPE ROUTE MANAGEMENT ENGINE
             if (sidebar.visibility == View.GONE) {
                 if (currentFocusedRowIndex in movieRows.indices) {
                     val currentRowContainer = movieRows[currentFocusedRowIndex]
                     if (currentRowContainer.childCount > 0) {
                         val firstTile = currentRowContainer.getChildAt(0)
-                        
-                        // Condition A: If the first tile isn't focused yet, bounce focus directly to it!
                         if (!firstTile.isFocused) {
                             firstTile.requestFocus()
                             return true
                         }
                     }
                 }
-                
-                // Condition B: If we're already on the first tile, slide open the sidebar menu
                 showSidebarLayout()
                 return true
             }
