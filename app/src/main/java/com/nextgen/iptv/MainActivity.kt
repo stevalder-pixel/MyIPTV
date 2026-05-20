@@ -58,8 +58,6 @@ class MainActivity : FragmentActivity() {
                 isFocusable = true
                 isFocusableInTouchMode = true
                 gravity = Gravity.CENTER_VERTICAL
-                
-                // FIXED: Explicitly ensuring no underlines or background borders populate on focus
                 background = null
 
                 setOnFocusChangeListener { view, hasFocus ->
@@ -91,9 +89,8 @@ class MainActivity : FragmentActivity() {
 
         contentArea = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            // Align content to bottom to leave top half of screen open for TMDB backdrop wall
             gravity = Gravity.BOTTOM 
-            setPadding(80, 40, 80, 80) // Expanded bottom padding for perfect positioning
+            setPadding(80, 40, 80, 40)
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
@@ -111,6 +108,7 @@ class MainActivity : FragmentActivity() {
         sidebar.layoutParams.width = 0
         sidebar.requestLayout()
         
+        // FIX: Directly forces absolute focus on the exact 1st child card element, killing the dead-zone padding bug
         if (currentFocusedRowIndex in movieRows.indices && movieRows[currentFocusedRowIndex].childCount > 0) {
             movieRows[currentFocusedRowIndex].getChildAt(0).requestFocus()
         } else if (movieRows.isNotEmpty() && movieRows[0].childCount > 0) {
@@ -133,12 +131,11 @@ class MainActivity : FragmentActivity() {
         sectionContainers.clear()
         currentFocusedRowIndex = 0
 
-        // FIXED: Dropping the title text view height down slightly or integrating a massive top pusher space
         val topSpacer = View(this).apply {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 0,
-                1.0f // Heavy layout weight pushes content elements directly to bottom screen half
+                1.0f
             )
         }
         contentArea.addView(topSpacer)
@@ -153,7 +150,7 @@ class MainActivity : FragmentActivity() {
             }
             textSize = 34f
             setTextColor(android.graphics.Color.WHITE)
-            setPadding(20, 0, 0, 30)
+            setPadding(20, 0, 0, 10)
         }
         contentArea.addView(titleView)
 
@@ -179,13 +176,16 @@ class MainActivity : FragmentActivity() {
                     text = sectionName
                     textSize = 17f
                     setTextColor(android.graphics.Color.parseColor("#445373"))
-                    setPadding(20, 15, 0, 20)
+                    setPadding(20, 10, 0, 10)
                 }
                 rowWrapper.addView(rowLabel)
 
+                // FIX: Added explicit top/bottom padding to parent horizontal container view scroll workspace
                 val horizontalScroll = HorizontalScrollView(this).apply {
                     isHorizontalScrollBarEnabled = false
                     isVerticalScrollBarEnabled = false
+                    setPadding(0, 25, 0, 25) // This provides the padding safety margin to prevent chopped cards
+                    clipToPadding = false    // Allows rendering assets smoothly inside the padding bounds
                 }
                 val rowItemsContainer = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
 
@@ -216,8 +216,8 @@ class MainActivity : FragmentActivity() {
                         setOnFocusChangeListener { view, hasFocus ->
                             view.background = if (hasFocus) cardFocused else cardNormal
                             if (hasFocus) {
-                                view.scaleX = 1.04f
-                                view.scaleY = 1.04f
+                                view.scaleX = 1.05f
+                                view.scaleY = 1.05f
                                 currentFocusedRowIndex = rowIndex
                                 isolateFocusedRow(rowIndex)
                             } else {
@@ -230,6 +230,7 @@ class MainActivity : FragmentActivity() {
                             if (event.action == KeyEvent.ACTION_DOWN) {
                                 when (keyCode) {
                                     KeyEvent.KEYCODE_DPAD_LEFT -> {
+                                        // FIX: Instant zero-delay return path from the very first card item
                                         if (i == 1) {
                                             showSidebarLayout()
                                             return@setOnKeyListener true
@@ -291,8 +292,14 @@ class MainActivity : FragmentActivity() {
         isDisplayingDetails = true
         contentArea.removeAllViews()
 
+        // FIX: Rebuilt layout constraints to format cleanly as a Left-Panel focused info slate block
         val detailLayout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
+            gravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
+            layoutParams = LinearLayout.LayoutParams(
+                650, // Constrained width keeping metadata anchored beautifully on the left display margins
+                LinearLayout.LayoutParams.MATCH_PARENT
+            )
             setPadding(30, 20, 20, 20)
         }
 
@@ -305,7 +312,7 @@ class MainActivity : FragmentActivity() {
         detailLayout.addView(titleView)
 
         val descriptionView = TextView(this).apply {
-            text = "TMDB Metadata Backbone Loaded • Verified Stremio Feed Link\nPress button below to trigger high-speed trailer streaming playback nodes."
+            text = "TMDB Metadata Backbone Loaded • Verified Stremio Feed Link\n\nPress the button below to trigger high-speed trailer streaming playback nodes directly on device."
             textSize = 16f
             setTextColor(android.graphics.Color.parseColor("#7A89A8"))
             setPadding(0, 0, 0, 45)
