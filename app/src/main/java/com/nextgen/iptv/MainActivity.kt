@@ -35,6 +35,7 @@ class MainActivity : FragmentActivity() {
             orientation = LinearLayout.HORIZONTAL
             setBackgroundColor(android.graphics.Color.parseColor("#040710"))
             clipChildren = false 
+            clipToPadding = false
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
@@ -49,9 +50,10 @@ class MainActivity : FragmentActivity() {
             layoutParams = LinearLayout.LayoutParams(140, LinearLayout.LayoutParams.MATCH_PARENT)
             isVerticalScrollBarEnabled = false
             clipChildren = false
+            clipToPadding = false
         }
 
-        // Clean link directly to our XML vector assets
+        // Clean link to our custom vector XML assets
         val vectorResIds = listOf(
             R.drawable.ic_tv_modern,
             R.drawable.ic_movie_modern,
@@ -103,6 +105,7 @@ class MainActivity : FragmentActivity() {
             gravity = Gravity.BOTTOM 
             setPadding(60, 20, 60, 20)
             clipChildren = false 
+            clipToPadding = false
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
@@ -187,7 +190,7 @@ class MainActivity : FragmentActivity() {
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     ).apply {
-                        setMargins(0, 10, 0, 30)
+                        setMargins(0, 15, 0, 35)
                     }
                 }
 
@@ -202,7 +205,7 @@ class MainActivity : FragmentActivity() {
                 val horizontalScroll = HorizontalScrollView(this).apply {
                     isHorizontalScrollBarEnabled = false
                     isVerticalScrollBarEnabled = false
-                    setPadding(10, 40, 10, 50) 
+                    setPadding(10, 45, 10, 55) 
                     clipToPadding = false      
                     clipChildren = false
                 }
@@ -233,14 +236,14 @@ class MainActivity : FragmentActivity() {
 
                         background = cardNormal
                         layoutParams = LinearLayout.LayoutParams(250, 350).apply {
-                            setMargins(15, 10, 15, 10) 
+                            setMargins(15, 15, 15, 15) 
                         }
 
                         setOnFocusChangeListener { view, hasFocus ->
                             view.background = if (hasFocus) cardFocused else cardNormal
                             if (hasFocus) {
-                                view.scaleX = 1.06f
-                                view.scaleY = 1.06f
+                                view.scaleX = 1.08f
+                                view.scaleY = 1.08f
                                 currentFocusedRowIndex = rowIndex
                                 isolateFocusedRow(rowIndex)
                             } else {
