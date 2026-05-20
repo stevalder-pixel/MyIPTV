@@ -15,10 +15,8 @@ class MainActivity : FragmentActivity() {
 
     private lateinit var sidebar: LinearLayout
     private lateinit var contentArea: LinearLayout
-    private val menuItems = listOf("📺 Live TV", "🎬 Movies", "🍿 TV Series", "⚙️ Settings")
+    private val menuItems = listOf("Live TV", "Movies", "TV Series", "Settings")
     private val sidebarViews = mutableListOf<TextView>()
-    
-    // Track row containers for the back button focus rule
     private val movieRows = mutableListOf<LinearLayout>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,19 +24,19 @@ class MainActivity : FragmentActivity() {
 
         val mainLayout = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
-            setBackgroundColor(android.graphics.Color.parseColor("#060B19")) // Cinematic Deep Midnight Navy
+            setBackgroundColor(android.graphics.Color.parseColor("#050811")) // Deeper Pitch Black-Navy
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
             )
         }
 
-        // Sleek, modern sidebar panel
+        // Clean Sidebar panel structure
         sidebar = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.TOP
-            setPadding(25, 60, 25, 0)
-            setBackgroundColor(android.graphics.Color.parseColor("#0B132B")) // Translucent dark slate
+            setPadding(20, 80, 20, 0)
+            setBackgroundColor(android.graphics.Color.parseColor("#0A0F1D")) // Sleek Dark Panel
             layoutParams = LinearLayout.LayoutParams(
                 340,
                 LinearLayout.LayoutParams.MATCH_PARENT
@@ -48,34 +46,33 @@ class MainActivity : FragmentActivity() {
         menuItems.forEachIndexed { index, title ->
             val menuItem = TextView(this).apply {
                 text = title
-                textSize = 18f
-                setTextColor(android.graphics.Color.parseColor("#A0AABF"))
-                setPadding(30, 25, 30, 25)
+                textSize = 19f
+                setTextColor(android.graphics.Color.parseColor("#6C7A9C")) // Muted minimalist text
+                setPadding(40, 30, 40, 30)
                 isFocusable = true
                 isFocusableInTouchMode = true
                 gravity = Gravity.CENTER_VERTICAL
-                
-                // Rounded corner pill backgrounds for menus
-                val normalDrawable = android.graphics.drawable.GradientDrawable().apply {
-                    setColor(android.graphics.Color.TRANSPARENT)
-                    cornerRadius = 15f
-                }
-                val focusDrawable = android.graphics.drawable.GradientDrawable().apply {
-                    setColor(android.graphics.Color.parseColor("#87CEEB")) // Premium Sky Blue Focus
-                    cornerRadius = 15f
-                }
-
-                background = normalDrawable
 
                 setOnFocusChangeListener { view, hasFocus ->
                     if (hasFocus) {
-                        view.background = focusDrawable
-                        setTextColor(android.graphics.Color.parseColor("#060B19")) // Dark text on light background
+                        // Minimalist text accent focus (No bulky bright backgrounds)
+                        setTextColor(android.graphics.Color.WHITE)
+                        view.scaleX = 1.05f // Subtle cinematic lift animation
+                        view.scaleY = 1.05f
                         updateContentArea(index)
                     } else {
-                        view.background = normalDrawable
-                        setTextColor(android.graphics.Color.parseColor("#A0AABF"))
+                        setTextColor(android.graphics.Color.parseColor("#6C7A9C"))
+                        view.scaleX = 1.0f
+                        view.scaleY = 1.0f
                     }
+                }
+
+                // Smoothly hide sidebar if user presses RIGHT key to enter content items
+                setOnKeyListener { _, keyCode, event ->
+                    if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                        hideSidebarLayout()
+                    }
+                    false
                 }
             }
             sidebar.addView(menuItem)
@@ -84,7 +81,7 @@ class MainActivity : FragmentActivity() {
 
         contentArea = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(40, 40, 40, 40)
+            setPadding(60, 50, 60, 50)
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
@@ -98,71 +95,79 @@ class MainActivity : FragmentActivity() {
         sidebarViews.firstOrNull()?.requestFocus()
     }
 
+    private fun hideSidebarLayout() {
+        sidebar.layoutParams.width = 0 // Completely collapses sidebar space
+        sidebar.requestLayout()
+    }
+
+    private fun showSidebarLayout() {
+        sidebar.layoutParams.width = 340 // Returns sidebar to standard size
+        sidebar.requestLayout()
+        sidebarViews.firstOrNull()?.requestFocus()
+    }
+
     private fun updateContentArea(menuIndex: Int) {
         contentArea.removeAllViews()
         movieRows.clear()
 
         val titleView = TextView(this).apply {
             text = when(menuIndex) {
-                0 -> "Live Streams & TV Portals"
-                1 -> "Premium Movies Catalog"
-                2 -> "Premium TV Series Feed"
-                3 -> "System Settings"
+                0 -> "Live Channels"
+                1 -> "Cinematic Movies"
+                2 -> "TV Series"
+                3 -> "Configuration"
                 else -> ""
             }
-            textSize = 30f
+            textSize = 34f
             setTextColor(android.graphics.Color.WHITE)
-            setPadding(0, 0, 0, 30)
+            setPadding(0, 0, 0, 40)
         }
         contentArea.addView(titleView)
 
-        // Generate Cinematic Horizontal Rows for Movies & TV
         if (menuIndex == 1 || menuIndex == 2) {
-            val sections = if (menuIndex == 1) listOf("Trending Content", "Stremio Hot Add-ons", "TorBox Cached Links") else listOf("Popular Series", "Recently Updated")
-            
+            val sections = if (menuIndex == 1) listOf("Trending Now", "TorBox Links") else listOf("Popular", "Recent Releases")
             val scrollContainer = ScrollView(this)
             val verticalLayout = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
 
             sections.forEach { sectionName ->
                 val rowLabel = TextView(this).apply {
                     text = sectionName
-                    textSize = 18f
-                    setTextColor(android.graphics.Color.parseColor("#87CEEB")) // Sky Blue section labels
-                    setPadding(10, 20, 0, 15)
+                    textSize = 16f
+                    setTextColor(android.graphics.Color.parseColor("#495A80"))
+                    setPadding(10, 25, 0, 15)
                 }
                 verticalLayout.addView(rowLabel)
 
                 val horizontalScroll = HorizontalScrollView(this)
                 val rowItemsContainer = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
 
-                // Generate individual stylized media cards
                 for (i in 1..8) {
                     val card = TextView(this).apply {
-                        text = "Media Item $i\n[TorBox 4K]"
+                        text = "Poster $i"
                         textSize = 14f
-                        setTextColor(android.graphics.Color.WHITE)
+                        setTextColor(android.graphics.Color.parseColor("#9EADCC"))
                         gravity = Gravity.CENTER
-                        setPadding(20, 20, 20, 20)
                         isFocusable = true
                         isFocusableInTouchMode = true
                         
                         val cardNormal = android.graphics.drawable.GradientDrawable().apply {
-                            setColor(android.graphics.Color.parseColor("#1C2541"))
-                            cornerRadius = 20f
+                            setColor(android.graphics.Color.parseColor("#0F1626"))
+                            cornerRadius = 16f
                         }
                         val cardFocused = android.graphics.drawable.GradientDrawable().apply {
-                            setColor(android.graphics.Color.parseColor("#112244"))
-                            cornerRadius = 20f
-                            setStroke(4, android.graphics.Color.parseColor("#87CEEB")) // Glowing Sky Blue stroke border
+                            setColor(android.graphics.Color.parseColor("#152035"))
+                            cornerRadius = 16f
+                            setStroke(3, android.graphics.Color.WHITE) // Clean, high-end white focal border
                         }
 
                         background = cardNormal
-                        layoutParams = LinearLayout.LayoutParams(240, 160).apply {
-                            setMargins(10, 0, 10, 0)
+                        layoutParams = LinearLayout.LayoutParams(260, 380).apply { // Modern vertical poster cards aspect ratio
+                            setMargins(12, 0, 12, 0)
                         }
 
                         setOnFocusChangeListener { view, hasFocus ->
                             view.background = if (hasFocus) cardFocused else cardNormal
+                            if (hasFocus) view.scaleX = 1.03f else view.scaleX = 1.0f
                         }
                     }
                     rowItemsContainer.addView(card)
@@ -174,26 +179,24 @@ class MainActivity : FragmentActivity() {
             }
             scrollContainer.addView(verticalLayout)
             contentArea.addView(scrollContainer)
-        } else {
-            // Placeholder text layout for Live TV / Settings
-            val descriptionView = TextView(this).apply {
-                text = "Interface framework ready. Preparing authentication components..."
-                textSize = 16f
-                setTextColor(android.graphics.Color.parseColor("#A0AABF"))
-            }
-            contentArea.addView(descriptionView)
         }
     }
 
-    // CRITICAL REQUIREMENT: Intercept back button click to reset focus to first row tile
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // Rule 1: If sidebar is completely hidden, bring it back instantly
+            if (sidebar.layoutParams.width == 0) {
+                showSidebarLayout()
+                return true
+            }
+            
+            // Rule 2: Snap back to first card block position
             movieRows.forEach { rowContainer ->
                 if (rowContainer.hasFocus()) {
                     val firstChild = rowContainer.getChildAt(0)
                     if (firstChild != null && !firstChild.isFocused) {
-                        firstChild.requestFocus() // Snap focus back to the first tile instantly
-                        return true // Prevent app from exiting or going backward
+                        firstChild.requestFocus()
+                        return true
                     }
                 }
             }
