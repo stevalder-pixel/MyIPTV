@@ -19,7 +19,11 @@ class MainActivity : FragmentActivity() {
     private lateinit var contentArea: LinearLayout
     private val menuItems = listOf("Live TV", "Movies", "TV Series", "Settings")
     private val sidebarViews = mutableListOf<TextView>()
+    
+    // Track row wrappers to easily toggle their visibility
+    private val sectionContainers = mutableListOf<LinearLayout>()
     private val movieRows = mutableListOf<LinearLayout>()
+    
     private var isDisplayingDetails = false
     private var lastActiveMenuIndex = 1
 
@@ -28,27 +32,27 @@ class MainActivity : FragmentActivity() {
 
         val mainLayout = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
-            setBackgroundColor(android.graphics.Color.parseColor("#050811")) // Cinematic pitch-navy
+            setBackgroundColor(android.graphics.Color.parseColor("#050811"))
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
             )
         }
 
-        // Clean slate premium sidebar navigation deck
         sidebar = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.TOP
             setPadding(20, 80, 20, 0)
             setBackgroundColor(android.graphics.Color.parseColor("#0A0F1D"))
             layoutParams = LinearLayout.LayoutParams(340, LinearLayout.LayoutParams.MATCH_PARENT)
+            isVerticalScrollBarEnabled = false
         }
 
         menuItems.forEachIndexed { index, title ->
             val menuItem = TextView(this).apply {
                 text = title
                 textSize = 19f
-                setTextColor(android.graphics.Color.parseColor("#5A6785")) // Modern muted default tone
+                setTextColor(android.graphics.Color.parseColor("#5A6785"))
                 setPadding(50, 30, 40, 30)
                 isFocusable = true
                 isFocusableInTouchMode = true
@@ -56,7 +60,6 @@ class MainActivity : FragmentActivity() {
 
                 setOnFocusChangeListener { view, hasFocus ->
                     if (hasFocus) {
-                        // High-end minimalist design text color swap
                         setTextColor(android.graphics.Color.WHITE)
                         view.scaleX = 1.06f
                         view.scaleY = 1.06f
@@ -69,7 +72,6 @@ class MainActivity : FragmentActivity() {
                     }
                 }
 
-                // Collapse sidebar when clicking RIGHT to jump into rows
                 setOnKeyListener { _, keyCode, event ->
                     if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
                         hideSidebarLayout()
@@ -103,7 +105,6 @@ class MainActivity : FragmentActivity() {
         sidebar.layoutParams.width = 0
         sidebar.requestLayout()
         
-        // Push focus automatically to first element inside content container area
         if (movieRows.isNotEmpty() && movieRows[0].childCount > 0) {
             movieRows[0].getChildAt(0).requestFocus()
         }
@@ -121,6 +122,7 @@ class MainActivity : FragmentActivity() {
         if (isDisplayingDetails) return
         contentArea.removeAllViews()
         movieRows.clear()
+        sectionContainers.clear()
 
         val titleView = TextView(this).apply {
             text = when(menuIndex) {
@@ -138,19 +140,30 @@ class MainActivity : FragmentActivity() {
 
         if (menuIndex == 1 || menuIndex == 2) {
             val sections = if (menuIndex == 1) listOf("Trending Content", "TorBox Debrid Direct") else listOf("Popular Series", "Recent Tracker Drops")
-            val scrollContainer = ScrollView(this)
+            val scrollContainer = ScrollView(this).apply { isVerticalScrollBarEnabled = false }
             val verticalLayout = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
 
-            sections.forEach { sectionName ->
+            sections.forEachIndexed { rowIndex, sectionName ->
+                // Outer layout container for the entire category row block
+                val rowWrapper = LinearLayout(this).apply {
+                    orientation = LinearLayout.VERTICAL
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                }
+
                 val rowLabel = TextView(this).apply {
                     text = sectionName
                     textSize = 16f
                     setTextColor(android.graphics.Color.parseColor("#445373"))
                     setPadding(15, 25, 0, 15)
                 }
-                verticalLayout.addView(rowLabel)
+                rowWrapper.addView(rowLabel)
 
-                val horizontalScroll = HorizontalScrollView(this)
+                val horizontalScroll = HorizontalScrollView(this).apply {
+                    isHorizontalScrollBarEnabled = false // FIX: Turn off horizontal scrollbar line
+                }
                 val rowItemsContainer = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
 
                 for (i in 1..8) {
@@ -169,7 +182,7 @@ class MainActivity : FragmentActivity() {
                         val cardFocused = android.graphics.drawable.GradientDrawable().apply {
                             setColor(android.graphics.Color.parseColor("#131D35"))
                             cornerRadius = 16f
-                            setStroke(3, android.graphics.Color.WHITE) // High contrast premium white framing line
+                            setStroke(3, android.graphics.Color.WHITE)
                         }
 
                         background = cardNormal
@@ -179,7 +192,24 @@ class MainActivity : FragmentActivity() {
 
                         setOnFocusChangeListener { view, hasFocus ->
                             view.background = if (hasFocus) cardFocused else cardNormal
-                            if (hasFocus) view.scaleX = 1.04f else view.scaleX = 1.0f
+                            if (hasFocus) {
+                                view.scaleX = 1.04f
+                                // DYNAMIC ISOLATION RULE: Show only this container row, hide the rest!
+                                isolateFocusedRow(rowIndex)
+                            } else {
+                                view.scaleX = 1.0f
+                            }
+                        }
+
+                        // Intercept LEFT button clicks to bring back sidebar
+                        setOnKeyListener { _, keyCode, event ->
+                            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                                if (i == 1) { // We are on the very first card tile of this row
+                                    showSidebarLayout()
+                                    return@setOnKeyListener true
+                                }
+                            }
+                            false
                         }
 
                         setOnClickListener {
@@ -191,10 +221,25 @@ class MainActivity : FragmentActivity() {
                 
                 movieRows.add(rowItemsContainer)
                 horizontalScroll.addView(rowItemsContainer)
-                verticalLayout.addView(horizontalScroll)
+                rowWrapper.addView(horizontalScroll)
+                
+                sectionContainers.add(rowWrapper)
+                verticalLayout.addView(rowWrapper)
             }
             scrollContainer.addView(verticalLayout)
             contentArea.addView(scrollContainer)
+        }
+    }
+
+    // Dynamic row visibility manager engine
+    private fun isolateFocusedRow(focusedIndex: Int) {
+        sectionContainers.forEachIndexed { idx, container ->
+            if (idx == focusedIndex) {
+                container.visibility = View.VISIBLE
+                container.alpha = 1.0f
+            } else {
+                container.visibility = View.GONE // Hide completely from rendering pipeline
+            }
         }
     }
 
@@ -257,20 +302,18 @@ class MainActivity : FragmentActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            // Back rule 1: Close details mode view window first
             if (isDisplayingDetails) {
                 isDisplayingDetails = false
                 updateContentArea(lastActiveMenuIndex)
                 return true
             }
 
-            // Back rule 2: If menu panel is hidden from view container area, open it up
+            // Always open sidebar menu back up on BACK button press
             if (sidebar.layoutParams.width == 0) {
                 showSidebarLayout()
                 return true
             }
             
-            // Back rule 3: Focus auto-snap reset tracking
             movieRows.forEach { rowContainer ->
                 if (rowContainer.hasFocus()) {
                     val firstChild = rowContainer.getChildAt(0)
