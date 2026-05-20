@@ -53,7 +53,6 @@ class MainActivity : FragmentActivity() {
             clipToPadding = false
         }
 
-        // Clean link to our custom vector XML assets
         val vectorResIds = listOf(
             R.drawable.ic_tv_modern,
             R.drawable.ic_movie_modern,
@@ -103,7 +102,7 @@ class MainActivity : FragmentActivity() {
         contentArea = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.BOTTOM 
-            setPadding(60, 20, 60, 20)
+            setPadding(60, 10, 60, 10)
             clipChildren = false 
             clipToPadding = false
             layoutParams = LinearLayout.LayoutParams(
@@ -162,7 +161,7 @@ class MainActivity : FragmentActivity() {
             textSize = 32f
             typeface = android.graphics.Typeface.DEFAULT_BOLD
             setTextColor(android.graphics.Color.WHITE)
-            setPadding(20, 0, 0, 15)
+            setPadding(20, 0, 0, 10)
         }
         contentArea.addView(titleView)
 
@@ -174,11 +173,19 @@ class MainActivity : FragmentActivity() {
                 isHorizontalScrollBarEnabled = false
                 clipChildren = false
                 clipToPadding = false
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
             }
             val verticalLayout = LinearLayout(this).apply { 
                 orientation = LinearLayout.VERTICAL 
                 clipChildren = false
                 clipToPadding = false
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
             }
 
             sections.forEachIndexed { rowIndex, sectionName ->
@@ -190,40 +197,49 @@ class MainActivity : FragmentActivity() {
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     ).apply {
-                        setMargins(0, 15, 0, 35)
+                        setMargins(0, 5, 0, 10)
                     }
                 }
 
                 val rowLabel = TextView(this).apply {
                     text = sectionName
-                    textSize = 16f
+                    textSize = 15f
                     setTextColor(android.graphics.Color.parseColor("#4E5B7C"))
-                    setPadding(20, 5, 0, 5)
+                    setPadding(20, 0, 0, 0)
                 }
                 rowWrapper.addView(rowLabel)
 
                 val horizontalScroll = HorizontalScrollView(this).apply {
                     isHorizontalScrollBarEnabled = false
                     isVerticalScrollBarEnabled = false
-                    setPadding(10, 45, 10, 55) 
+                    setPadding(10, 40, 10, 60) 
                     clipToPadding = false      
                     clipChildren = false
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        460
+                    )
                 }
+                
                 val rowItemsContainer = LinearLayout(this).apply { 
                     orientation = LinearLayout.HORIZONTAL 
                     clipChildren = false
                     clipToPadding = false
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT
+                    )
                 }
 
                 for (i in 1..8) {
-                    val card = TextView(this).apply {
-                        text = "Media Card \$i"
-                        textSize = 14f
-                        setTextColor(android.graphics.Color.parseColor("#8E9CB3"))
+                    val cardContainer = LinearLayout(this@MainActivity).apply {
+                        orientation = LinearLayout.VERTICAL
                         gravity = Gravity.CENTER
                         isFocusable = true
                         isFocusableInTouchMode = true
-                        
+                        clipChildren = false
+                        clipToPadding = false
+
                         val cardNormal = android.graphics.drawable.GradientDrawable().apply {
                             setColor(android.graphics.Color.parseColor("#0C1222"))
                             cornerRadius = 16f
@@ -235,20 +251,36 @@ class MainActivity : FragmentActivity() {
                         }
 
                         background = cardNormal
+                        
                         layoutParams = LinearLayout.LayoutParams(250, 350).apply {
-                            setMargins(15, 15, 15, 15) 
+                            setMargins(20, 0, 20, 0)
+                            gravity = Gravity.CENTER_VERTICAL
                         }
+
+                        val cardText = TextView(this@MainActivity).apply {
+                            text = if (menuIndex == 1) "Media Item $i" else "Media Card $i"
+                            textSize = 14f
+                            setTextColor(android.graphics.Color.parseColor("#8E9CB3"))
+                            gravity = Gravity.CENTER
+                            layoutParams = LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                            )
+                        }
+                        addView(cardText)
 
                         setOnFocusChangeListener { view, hasFocus ->
                             view.background = if (hasFocus) cardFocused else cardNormal
                             if (hasFocus) {
                                 view.scaleX = 1.08f
                                 view.scaleY = 1.08f
+                                cardText.setTextColor(android.graphics.Color.WHITE)
                                 currentFocusedRowIndex = rowIndex
                                 isolateFocusedRow(rowIndex)
                             } else {
                                 view.scaleX = 1.0f
                                 view.scaleY = 1.0f
+                                cardText.setTextColor(android.graphics.Color.parseColor("#8E9CB3"))
                             }
                         }
 
@@ -281,10 +313,10 @@ class MainActivity : FragmentActivity() {
                         }
 
                         setOnClickListener {
-                            showMediaDetails(text.toString())
+                            showMediaDetails(cardText.text.toString())
                         }
                     }
-                    rowItemsContainer.addView(card)
+                    rowItemsContainer.addView(cardContainer)
                 }
                 
                 movieRows.add(rowItemsContainer)
