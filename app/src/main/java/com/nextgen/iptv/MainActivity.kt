@@ -34,25 +34,24 @@ class MainActivity : FragmentActivity() {
         mainLayout = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             setBackgroundColor(android.graphics.Color.parseColor("#040710"))
-            clipChildren = false // Allow expanding elements to draw over layouts
+            clipChildren = false 
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
             )
         }
 
-        // Clean semi-transparent sidebar menu
         sidebar = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
             setPadding(10, 0, 10, 0)
-            setBackgroundColor(android.graphics.Color.parseColor("#CC080D1A")) // 80% opacity overlay
+            setBackgroundColor(android.graphics.Color.parseColor("#CC080D1A")) 
             layoutParams = LinearLayout.LayoutParams(140, LinearLayout.LayoutParams.MATCH_PARENT)
             isVerticalScrollBarEnabled = false
             clipChildren = false
         }
 
-        // Linking our newly created crisp layout resource drawables
+        // Clean link directly to our XML vector assets
         val vectorResIds = listOf(
             R.drawable.ic_tv_modern,
             R.drawable.ic_movie_modern,
@@ -67,7 +66,6 @@ class MainActivity : FragmentActivity() {
                 isFocusable = true
                 isFocusableInTouchMode = true
                 
-                // Slate gray base unselected state
                 setColorFilter(android.graphics.Color.parseColor("#495573"))
                 layoutParams = LinearLayout.LayoutParams(90, 130).apply {
                     gravity = Gravity.CENTER_HORIZONTAL
@@ -104,7 +102,7 @@ class MainActivity : FragmentActivity() {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.BOTTOM 
             setPadding(60, 20, 60, 20)
-            clipChildren = false // CRITICAL: Stop parent container frame pruning card rings
+            clipChildren = false 
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
@@ -183,7 +181,7 @@ class MainActivity : FragmentActivity() {
             sections.forEachIndexed { rowIndex, sectionName ->
                 val rowWrapper = LinearLayout(this).apply {
                     orientation = LinearLayout.VERTICAL
-                    clipChildren = false // CRITICAL: Stop row wrapper pruning card rings
+                    clipChildren = false 
                     clipToPadding = false
                     layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -201,12 +199,11 @@ class MainActivity : FragmentActivity() {
                 }
                 rowWrapper.addView(rowLabel)
 
-                // High clearance horizontal engine
                 val horizontalScroll = HorizontalScrollView(this).apply {
                     isHorizontalScrollBarEnabled = false
                     isVerticalScrollBarEnabled = false
-                    setPadding(10, 40, 10, 50) // Massive top/bottom clearance padding cushions
-                    clipToPadding = false      // Allow scaling items to break out of borders cleanly
+                    setPadding(10, 40, 10, 50) 
+                    clipToPadding = false      
                     clipChildren = false
                 }
                 val rowItemsContainer = LinearLayout(this).apply { 
@@ -236,7 +233,7 @@ class MainActivity : FragmentActivity() {
 
                         background = cardNormal
                         layoutParams = LinearLayout.LayoutParams(250, 350).apply {
-                            setMargins(15, 10, 15, 10) // Extra margin workspace
+                            setMargins(15, 10, 15, 10) 
                         }
 
                         setOnFocusChangeListener { view, hasFocus ->
