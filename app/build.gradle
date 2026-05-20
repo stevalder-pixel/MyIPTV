@@ -15,22 +15,10 @@ android {
         versionName "1.0-RELEASE"
     }
 
-    // This creates a fresh digital signature directly during compilation
-    signingConfigs {
-        debug {
-            storeFile file("../debug.keystore")
-            storePassword "android"
-            keyAlias "androiddebugkey"
-            keyPassword "android"
-        }
-    }
-
     buildTypes {
         release {
             minifyEnabled false
-            signingConfig signingConfigs.debug
-        }
-        debug {
+            // This safely links to the standard internal android debug signature
             signingConfig signingConfigs.debug
         }
     }
