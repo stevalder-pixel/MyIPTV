@@ -42,11 +42,11 @@ class MainActivity : FragmentActivity() {
             )
         }
 
-        // PERFECTED: 100% Transparent Sidebar Container
+        // Maintaining your successful 100% transparent sidebar container
         sidebar = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
-            setPadding(30, 0, 10, 0)
+            setPadding(25, 0, 25, 0)
             setBackgroundColor(android.graphics.Color.TRANSPARENT) 
             layoutParams = LinearLayout.LayoutParams(160, LinearLayout.LayoutParams.MATCH_PARENT)
             isVerticalScrollBarEnabled = false
@@ -54,40 +54,37 @@ class MainActivity : FragmentActivity() {
             clipToPadding = false
         }
 
-        // Clean text labels acting as highly responsive minimalist icon buttons
-        val menuItems = listOf(
-            "📺\nLive TV" to 0,
-            "🎬\nMovies" to 1,
-            "🍿\nSeries" to 2,
-            "⚙️\nSettings" to 3
+        // RESTORED: Your premium, modern project vector assets
+        val vectorResIds = listOf(
+            R.drawable.ic_tv_modern,
+            R.drawable.ic_movie_modern,
+            R.drawable.ic_series_modern,
+            R.drawable.ic_settings_modern
         )
 
-        menuItems.forEachIndexed { index, pair ->
-            val menuItemView = TextView(this).apply {
-                text = pair.first
-                textSize = 13f
-                gravity = Gravity.CENTER
-                setPadding(0, 30, 0, 30)
+        vectorResIds.forEachIndexed { index, resId ->
+            val menuIconContainer = ImageView(this).apply {
+                setImageResource(resId)
+                setPadding(0, 35, 0, 35)
                 isFocusable = true
                 isFocusableInTouchMode = true
                 
-                // Muted slate gray unselected state
-                setTextColor(android.graphics.Color.parseColor("#495573"))
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, 
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
+                // Slate gray for unselected icons
+                setColorFilter(android.graphics.Color.parseColor("#495573"))
+                layoutParams = LinearLayout.LayoutParams(80, 120).apply {
+                    gravity = Gravity.CENTER_HORIZONTAL
+                }
 
                 setOnFocusChangeListener { view, hasFocus ->
                     if (hasFocus) {
-                        // High contrast pure white focus glow without any lines or background borders
-                        (view as TextView).setTextColor(android.graphics.Color.WHITE)
-                        view.scaleX = 1.2f
-                        view.scaleY = 1.2f
+                        // Smooth hardware scaling and clean white highlight (No background lines or bars)
+                        (view as ImageView).setColorFilter(android.graphics.Color.WHITE)
+                        view.scaleX = 1.25f
+                        view.scaleY = 1.25f
                         lastActiveMenuIndex = index
                         updateContentArea(index)
                     } else {
-                        (view as TextView).setTextColor(android.graphics.Color.parseColor("#495573"))
+                        (view as ImageView).setColorFilter(android.graphics.Color.parseColor("#495573"))
                         view.scaleX = 1.0f
                         view.scaleY = 1.0f
                     }
@@ -102,14 +99,14 @@ class MainActivity : FragmentActivity() {
                     }
                 }
             }
-            sidebar.addView(menuItemView)
-            sidebarViews.add(menuItemView)
+            sidebar.addView(menuIconContainer)
+            sidebarViews.add(menuIconContainer)
         }
 
         contentArea = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.BOTTOM 
-            setPadding(30, 10, 60, 10) 
+            setPadding(40, 10, 60, 10) 
             clipChildren = false 
             clipToPadding = false
             layoutParams = LinearLayout.LayoutParams(
@@ -122,7 +119,7 @@ class MainActivity : FragmentActivity() {
         mainLayout.addView(contentArea)
         setContentView(mainLayout)
 
-        // Request initial focus directly onto Movies
+        // Boot focus straight into the Movies view row
         sidebarViews.getOrNull(1)?.requestFocus()
     }
 
