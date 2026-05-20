@@ -42,49 +42,49 @@ class MainActivity : FragmentActivity() {
             )
         }
 
-        // FIXED: Translucent slate-glass menu bar (looks premium on empty screens and movie backgrounds)
+        // 100% Transparent Sidebar Container
         sidebar = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
-            setPadding(20, 0, 20, 0)
-            setBackgroundColor(android.graphics.Color.parseColor("#121624")) 
+            setPadding(35, 0, 15, 0)
+            setBackgroundColor(android.graphics.Color.TRANSPARENT) 
             layoutParams = LinearLayout.LayoutParams(150, LinearLayout.LayoutParams.MATCH_PARENT)
             isVerticalScrollBarEnabled = false
             clipChildren = false
             clipToPadding = false
         }
 
-        // Clean modern vector configuration mapping using rock-solid core symbols
-        val systemIcons = listOf(
-            android.R.drawable.ic_media_play,       // Live TV
-            android.R.drawable.button_onoff_indicator_on, // Movies / Gallery Node
-            android.R.drawable.ic_menu_slideshow,    // Series / Show Carousel
-            android.R.drawable.ic_menu_preferences   // Settings Cog
+        // Connected straight to your newly generated high-end outline vector files
+        val customVectorResIds = listOf(
+            R.drawable.ic_tv_modern,
+            R.drawable.ic_movie_modern,
+            R.drawable.ic_series_modern,
+            R.drawable.ic_settings_modern
         )
 
-        systemIcons.forEachIndexed { index, resId ->
+        customVectorResIds.forEachIndexed { index, resId ->
             val menuIconContainer = ImageView(this).apply {
                 setImageResource(resId)
                 setPadding(0, 40, 0, 40)
                 isFocusable = true
                 isFocusableInTouchMode = true
                 
-                // Slick premium unselected color palette
-                setColorFilter(android.graphics.Color.parseColor("#526285"))
-                layoutParams = LinearLayout.LayoutParams(70, 130).apply {
+                // Slate Blue/Gray unfocused state matching premium dashboards
+                setColorFilter(android.graphics.Color.parseColor("#4D5875"))
+                layoutParams = LinearLayout.LayoutParams(65, 125).apply {
                     gravity = Gravity.CENTER_HORIZONTAL
                 }
 
                 setOnFocusChangeListener { view, hasFocus ->
                     if (hasFocus) {
-                        // High-end glowing focus state with scaling, leaving no white bars behind
+                        // Clean, un-clipped active scale with high-contrast highlight
                         (view as ImageView).setColorFilter(android.graphics.Color.WHITE)
-                        view.scaleX = 1.3f
-                        view.scaleY = 1.3f
+                        view.scaleX = 1.35f
+                        view.scaleY = 1.35f
                         lastActiveMenuIndex = index
                         updateContentArea(index)
                     } else {
-                        (view as ImageView).setColorFilter(android.graphics.Color.parseColor("#526285"))
+                        (view as ImageView).setColorFilter(android.graphics.Color.parseColor("#4D5875"))
                         view.scaleX = 1.0f
                         view.scaleY = 1.0f
                     }
@@ -106,7 +106,7 @@ class MainActivity : FragmentActivity() {
         contentArea = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.BOTTOM 
-            setPadding(50, 10, 50, 10) 
+            setPadding(35, 10, 45, 10) 
             clipChildren = false 
             clipToPadding = false
             layoutParams = LinearLayout.LayoutParams(
@@ -119,7 +119,7 @@ class MainActivity : FragmentActivity() {
         mainLayout.addView(contentArea)
         setContentView(mainLayout)
 
-        // Boot focus straight into Movies category
+        // Lock baseline focus to Movies item row
         sidebarViews.getOrNull(1)?.requestFocus()
     }
 
