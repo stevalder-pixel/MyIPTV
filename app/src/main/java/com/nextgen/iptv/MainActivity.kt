@@ -13,8 +13,29 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
+import coil.load
+import coil.transform.RoundedCornersTransformation
+import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
+import okhttp3.*
+import java.io.IOException
+
+data class TmdbResponse(
+    @SerializedName("results") val results: List<TmdbMovie>
+)
+
+data class TmdbMovie(
+    @SerializedName("id") val id: Int,
+    @SerializedName("title") val title: String?,
+    @SerializedName("name") val name: String?,
+    @SerializedName("poster_path") val posterPath: String?,
+    @SerializedName("overview") val overview: String?,
+    @SerializedName("backdrop_path") val backdropPath: String?
+)
 
 class MainActivity : FragmentActivity() {
+
+    private val tmdbApiKey = "0d5f6d8e07ab385be6c228b7950798bf"
 
     private lateinit var mainLayout: LinearLayout
     private lateinit var sidebar: LinearLayout
@@ -27,6 +48,8 @@ class MainActivity : FragmentActivity() {
     private var isDisplayingDetails = false
     private var lastActiveMenuIndex = 1
     private var currentFocusedRowIndex = 0
+    private val httpClient = OkHttpClient()
+    private val gson = Gson()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +65,6 @@ class MainActivity : FragmentActivity() {
             )
         }
 
-        // 100% Transparent Sidebar Container
         sidebar = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
@@ -54,7 +76,6 @@ class MainActivity : FragmentActivity() {
             clipToPadding = false
         }
 
-        // Connected straight to your newly generated high-end outline vector files
         val customVectorResIds = listOf(
             R.drawable.ic_tv_modern,
             R.drawable.ic_movie_modern,
@@ -68,8 +89,6 @@ class MainActivity : FragmentActivity() {
                 setPadding(0, 40, 0, 40)
                 isFocusable = true
                 isFocusableInTouchMode = true
-                
-                // Slate Blue/Gray unfocused state matching premium dashboards
                 setColorFilter(android.graphics.Color.parseColor("#4D5875"))
                 layoutParams = LinearLayout.LayoutParams(65, 125).apply {
                     gravity = Gravity.CENTER_HORIZONTAL
@@ -77,7 +96,6 @@ class MainActivity : FragmentActivity() {
 
                 setOnFocusChangeListener { view, hasFocus ->
                     if (hasFocus) {
-                        // Clean, un-clipped active scale with high-contrast highlight
                         (view as ImageView).setColorFilter(android.graphics.Color.WHITE)
                         view.scaleX = 1.35f
                         view.scaleY = 1.35f
@@ -119,7 +137,6 @@ class MainActivity : FragmentActivity() {
         mainLayout.addView(contentArea)
         setContentView(mainLayout)
 
-        // Lock baseline focus to Movies item row
         sidebarViews.getOrNull(1)?.requestFocus()
     }
 
@@ -127,8 +144,6 @@ class MainActivity : FragmentActivity() {
         sidebar.visibility = View.GONE
         if (currentFocusedRowIndex in movieRows.indices && movieRows[currentFocusedRowIndex].childCount > 0) {
             movieRows[currentFocusedRowIndex].getChildAt(0).requestFocus()
-        } else if (movieRows.isNotEmpty() && movieRows[0].childCount > 0) {
-            movieRows[0].getChildAt(0).requestFocus()
         }
     }
 
@@ -147,11 +162,7 @@ class MainActivity : FragmentActivity() {
         currentFocusedRowIndex = 0
 
         val topSpacer = View(this).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                0,
-                1.0f
-            )
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1.0f)
         }
         contentArea.addView(topSpacer)
 
@@ -171,17 +182,18 @@ class MainActivity : FragmentActivity() {
         contentArea.addView(titleView)
 
         if (menuIndex == 1 || menuIndex == 2) {
-            val sections = if (menuIndex == 1) listOf("Trending Content", "TorBox Debrid Direct") else listOf("Popular Series", "Recent Tracker Drops")
-            
+            val rowQueries = if (menuIndex == 1) {
+                listOf("Trending Now" to "movie/popular", "Top Rated" to "movie/top_rated")
+            } else {
+                listOf("Popular Shows" to "tv/popular", "Top Rated Series" to "tv/top_rated")
+            }
+
             val scrollContainer = ScrollView(this).apply {
                 isVerticalScrollBarEnabled = false
                 isHorizontalScrollBarEnabled = false
                 clipChildren = false
                 clipToPadding = false
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
+                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             }
             val verticalLayout = LinearLayout(this).apply { 
                 orientation = LinearLayout.VERTICAL 
@@ -193,7 +205,7 @@ class MainActivity : FragmentActivity() {
                 )
             }
 
-            sections.forEachIndexed { rowIndex, sectionName ->
+            rowQueries.forEachIndexed { rowIndex, pair ->
                 val rowWrapper = LinearLayout(this).apply {
                     orientation = LinearLayout.VERTICAL
                     clipChildren = false 
@@ -207,7 +219,7 @@ class MainActivity : FragmentActivity() {
                 }
 
                 val rowLabel = TextView(this).apply {
-                    text = sectionName
+                    text = pair.first
                     textSize = 15f
                     setTextColor(android.graphics.Color.parseColor("#4E5B7C"))
                     setPadding(20, 0, 0, 0)
@@ -217,13 +229,10 @@ class MainActivity : FragmentActivity() {
                 val horizontalScroll = HorizontalScrollView(this).apply {
                     isHorizontalScrollBarEnabled = false
                     isVerticalScrollBarEnabled = false
-                    setPadding(10, 40, 10, 60) 
+                    setPadding(10, 20, 10, 40) 
                     clipToPadding = false      
                     clipChildren = false
-                    layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        460
-                    )
+                    layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 420)
                 }
                 
                 val rowItemsContainer = LinearLayout(this).apply { 
@@ -236,106 +245,154 @@ class MainActivity : FragmentActivity() {
                     )
                 }
 
-                for (i in 1..8) {
-                    val cardContainer = LinearLayout(this@MainActivity).apply {
-                        orientation = LinearLayout.VERTICAL
-                        gravity = Gravity.CENTER
-                        isFocusable = true
-                        isFocusableInTouchMode = true
-                        clipChildren = false
-                        clipToPadding = false
-
-                        val cardNormal = android.graphics.drawable.GradientDrawable().apply {
-                            setColor(android.graphics.Color.parseColor("#0C1222"))
-                            cornerRadius = 16f
-                        }
-                        val cardFocused = android.graphics.drawable.GradientDrawable().apply {
-                            setColor(android.graphics.Color.parseColor("#16213E"))
-                            cornerRadius = 16f
-                            setStroke(4, android.graphics.Color.WHITE)
-                        }
-
-                        background = cardNormal
-                        
-                        layoutParams = LinearLayout.LayoutParams(250, 350).apply {
-                            setMargins(20, 0, 20, 0)
-                            gravity = Gravity.CENTER_VERTICAL
-                        }
-
-                        val cardText = TextView(this@MainActivity).apply {
-                            text = if (menuIndex == 1) "Media Item $i" else "Media Card $i"
-                            textSize = 14f
-                            setTextColor(android.graphics.Color.parseColor("#8E9CB3"))
-                            gravity = Gravity.CENTER
-                            layoutParams = LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT
-                            )
-                        }
-                        addView(cardText)
-
-                        setOnFocusChangeListener { view, hasFocus ->
-                            view.background = if (hasFocus) cardFocused else cardNormal
-                            if (hasFocus) {
-                                view.scaleX = 1.08f
-                                view.scaleY = 1.08f
-                                cardText.setTextColor(android.graphics.Color.WHITE)
-                                currentFocusedRowIndex = rowIndex
-                                isolateFocusedRow(rowIndex)
-                            } else {
-                                view.scaleX = 1.0f
-                                view.scaleY = 1.0f
-                                cardText.setTextColor(android.graphics.Color.parseColor("#8E9CB3"))
-                            }
-                        }
-
-                        setOnKeyListener { _, keyCode, event ->
-                            if (event.action == KeyEvent.ACTION_DOWN) {
-                                when (keyCode) {
-                                    KeyEvent.KEYCODE_DPAD_LEFT -> {
-                                        if (i == 1) {
-                                            showSidebarLayout()
-                                            return@setOnKeyListener true
-                                        }
-                                    }
-                                    KeyEvent.KEYCODE_DPAD_DOWN -> {
-                                        if (rowIndex < sections.size - 1) {
-                                            isolateFocusedRow(rowIndex + 1)
-                                            movieRows[rowIndex + 1].getChildAt(0).requestFocus()
-                                            return@setOnKeyListener true
-                                        }
-                                    }
-                                    KeyEvent.KEYCODE_DPAD_UP -> {
-                                        if (rowIndex > 0) {
-                                            isolateFocusedRow(rowIndex - 1)
-                                            movieRows[rowIndex - 1].getChildAt(0).requestFocus()
-                                            return@setOnKeyListener true
-                                        }
-                                    }
-                                }
-                            }
-                            false
-                        }
-
-                        setOnClickListener {
-                            showMediaDetails(cardText.text.toString())
-                        }
-                    }
-                    rowItemsContainer.addView(cardContainer)
-                }
-                
-                movieRows.add(rowItemsContainer)
                 horizontalScroll.addView(rowItemsContainer)
                 rowWrapper.addView(horizontalScroll)
-                
-                sectionContainers.add(rowWrapper)
                 verticalLayout.addView(rowWrapper)
+                
+                movieRows.add(rowItemsContainer)
+                sectionContainers.add(rowWrapper)
+
+                fetchTmdbMetadata(pair.second, rowItemsContainer, rowIndex)
             }
             
             scrollContainer.addView(verticalLayout)
             contentArea.addView(scrollContainer)
-            
             isolateFocusedRow(0)
+        }
+    }
+
+    private fun fetchTmdbMetadata(endpoint: String, container: LinearLayout, rowIndex: Int) {
+        if (tmdbApiKey.isEmpty()) {
+            addPlaceholderCards(container, rowIndex)
+            return
+        }
+
+        val url = "https://api.themoviedb.org/3/$endpoint?api_key=$tmdbApiKey&language=en-US&page=1"
+        val request = Request.Builder().url(url).build()
+
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread { addPlaceholderCards(container, rowIndex) }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.use {
+                    if (!response.isSuccessful) {
+                        runOnUiThread { addPlaceholderCards(container, rowIndex) }
+                        return
+                    }
+                    val bodyString = response.body?.string() ?: ""
+                    val tmdbData = gson.fromJson(bodyString, TmdbResponse::class.java)
+                    
+                    runOnUiThread {
+                        if (tmdbData?.results != null && tmdbData.results.isNotEmpty()) {
+                            populateMediaRow(container, tmdbData.results, rowIndex)
+                        } else {
+                            addPlaceholderCards(container, rowIndex)
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private fun populateMediaRow(container: LinearLayout, items: List<TmdbMovie>, rowIndex: Int) {
+        items.forEachIndexed { itemIndex, mediaItem ->
+            val cardContainer = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                gravity = Gravity.CENTER
+                isFocusable = true
+                isFocusableInTouchMode = true
+                clipChildren = false
+                clipToPadding = false
+
+                val cardNormal = android.graphics.drawable.GradientDrawable().apply {
+                    setColor(android.graphics.Color.parseColor("#0C1222"))
+                    cornerRadius = 14f
+                }
+                val cardFocused = android.graphics.drawable.GradientDrawable().apply {
+                    setColor(android.graphics.Color.parseColor("#16213E"))
+                    cornerRadius = 14f
+                    setStroke(4, android.graphics.Color.WHITE)
+                }
+                background = cardNormal
+                layoutParams = LinearLayout.LayoutParams(230, 345).apply {
+                    setMargins(15, 0, 15, 0)
+                    gravity = Gravity.CENTER_VERTICAL
+                }
+
+                val posterImageView = ImageView(this@MainActivity).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                    scaleType = ImageView.ScaleType.CENTER_CROP
+                    
+                    val posterUrl = "https://image.tmdb.org/t/p/w342${mediaItem.posterPath}"
+                    load(posterUrl) {
+                        crossfade(true)
+                        transformations(RoundedCornersTransformation(14f))
+                        error(android.R.drawable.ic_menu_gallery) 
+                    }
+                }
+                addView(posterImageView)
+
+                setOnFocusChangeListener { view, hasFocus ->
+                    view.background = if (hasFocus) cardFocused else cardNormal
+                    if (hasFocus) {
+                        view.scaleX = 1.08f
+                        view.scaleY = 1.08f
+                        currentFocusedRowIndex = rowIndex
+                        isolateFocusedRow(rowIndex)
+                    } else {
+                        view.scaleX = 1.0f
+                        view.scaleY = 1.0f
+                    }
+                }
+
+                setOnKeyListener { _, keyCode, event ->
+                    if (event.action == KeyEvent.ACTION_DOWN) {
+                        when (keyCode) {
+                            KeyEvent.KEYCODE_DPAD_LEFT -> {
+                                if (itemIndex == 0) {
+                                    showSidebarLayout()
+                                    return@setOnKeyListener true
+                                }
+                            }
+                            KeyEvent.KEYCODE_DPAD_DOWN -> {
+                                if (rowIndex < sectionContainers.size - 1) {
+                                    isolateFocusedRow(rowIndex + 1)
+                                    movieRows[rowIndex + 1].getChildAt(0).requestFocus()
+                                    return@setOnKeyListener true
+                                }
+                            }
+                            KeyEvent.KEYCODE_DPAD_UP -> {
+                                if (rowIndex > 0) {
+                                    isolateFocusedRow(rowIndex - 1)
+                                    movieRows[rowIndex - 1].getChildAt(0).requestFocus()
+                                    return@setOnKeyListener true
+                                }
+                            }
+                        }
+                    }
+                    false
+                }
+
+                setOnClickListener {
+                    showMediaDetails(mediaItem)
+                }
+            }
+            container.addView(cardContainer)
+        }
+    }
+
+    private fun addPlaceholderCards(container: LinearLayout, rowIndex: Int) {
+        for (i in 1..6) {
+            val placeholder = LinearLayout(this).apply {
+                layoutParams = LinearLayout.LayoutParams(230, 345).apply { setMargins(15, 0, 15, 0) }
+                setBackgroundColor(android.graphics.Color.parseColor("#0C1222"))
+            }
+            container.addView(placeholder)
         }
     }
 
@@ -350,7 +407,7 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    private fun showMediaDetails(mediaName: String) {
+    private fun showMediaDetails(movie: TmdbMovie) {
         isDisplayingDetails = true
         contentArea.removeAllViews()
 
@@ -362,23 +419,23 @@ class MainActivity : FragmentActivity() {
         }
 
         val titleView = TextView(this).apply {
-            text = mediaName
-            textSize = 40f
+            text = movie.title ?: movie.name ?: "Unknown Title"
+            textSize = 36f
             setTextColor(android.graphics.Color.WHITE)
             setPadding(0, 0, 0, 15)
         }
         detailLayout.addView(titleView)
 
         val descriptionView = TextView(this).apply {
-            text = "TMDB Metadata Backbone Loaded • Verified Stremio Feed Link\n\nPress the button below to trigger high-speed trailer streaming playback nodes directly on device."
-            textSize = 16f
+            text = movie.overview ?: "No synopsis records found."
+            textSize = 15f
             setTextColor(android.graphics.Color.parseColor("#7A89A8"))
             setPadding(0, 0, 0, 45)
         }
         detailLayout.addView(descriptionView)
 
-        val trailerButton = Button(this).apply {
-            text = "▶  Watch Trailer"
+        val playButton = Button(this).apply {
+            text = "▶  Stream Content"
             textSize = 15f
             setTextColor(android.graphics.Color.WHITE)
             isFocusable = true
@@ -400,13 +457,13 @@ class MainActivity : FragmentActivity() {
             }
 
             setOnClickListener {
-                Toast.makeText(this@MainActivity, "Launching Video Player Container...", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, "Querying TorBox Stream Links for ${titleView.text}...", Toast.LENGTH_SHORT).show()
             }
         }
 
-        detailLayout.addView(trailerButton)
+        detailLayout.addView(playButton)
         contentArea.addView(detailLayout)
-        trailerButton.requestFocus()
+        playButton.requestFocus()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -416,18 +473,7 @@ class MainActivity : FragmentActivity() {
                 updateContentArea(lastActiveMenuIndex)
                 return true
             }
-
             if (sidebar.visibility == View.GONE) {
-                if (currentFocusedRowIndex in movieRows.indices) {
-                    val currentRowContainer = movieRows[currentFocusedRowIndex]
-                    if (currentRowContainer.childCount > 0) {
-                        val firstTile = currentRowContainer.getChildAt(0)
-                        if (!firstTile.isFocused) {
-                            firstTile.requestFocus()
-                            return true
-                        }
-                    }
-                }
                 showSidebarLayout()
                 return true
             }
