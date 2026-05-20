@@ -8,7 +8,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.nextgen.iptv"
+        applicationId "com.nextgen.iptvpro"
         minSdk 26
         targetSdk 34
         versionCode 4
