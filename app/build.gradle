@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.nextgen.iptv'
-    compileSdk 34
+    compileSdk = 34
 
     defaultConfig {
         applicationId "com.nextgen.iptv"
         minSdk 26
-        targetSdk 34
+        targetSdk = 34
         versionCode 1
         versionName "1.0"
 
