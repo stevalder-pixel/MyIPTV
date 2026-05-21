@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setsetContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main)
 
         val posterImageView = findViewById<ImageView>(R.id.posterImageView)
 
