@@ -37,9 +37,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(com.nextgen.iptv.R.layout.activity_main)
 
-        val posterImageView = findViewById<ImageView>(R.id.posterImageView)
+
+        val posterImageView = findViewById<ImageView>(com.nextgen.iptv.R.id.posterImageView)
 
         // Initialize Retrofit
         val retrofit = Retrofit.Builder()
