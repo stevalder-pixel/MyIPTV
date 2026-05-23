@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.nextgen.iptv.R
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,7 +19,7 @@ data class MovieResponse(
 )
 
 data class TmdbMovie(
-    val id: Int,
+    val movieId: Int, // Renamed from 'id' to fix conflict with resource system
     val title: String,
     val poster_path: String?
 )
@@ -36,11 +37,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
-        // Using the fully qualified package name to completely stop the "id" and "layout" naming errors
-        setContentView(com.nextgen.iptv.R.layout.activity_main)
+        setContentView(R.layout.activity_main)
 
-        val posterImageView = findViewById<ImageView>(com.nextgen.iptv.R.id.posterImageView)
+        val posterImageView = findViewById<ImageView>(R.id.posterImageView)
 
         // Initialize Retrofit
         val retrofit = Retrofit.Builder()
