@@ -1,6 +1,5 @@
 package com.nextgen.iptv
 
-import com.nextgen.iptv.R
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -37,8 +36,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Using the fully qualified package name to completely stop the "id" and "layout" naming errors
         setContentView(com.nextgen.iptv.R.layout.activity_main)
-
 
         val posterImageView = findViewById<ImageView>(com.nextgen.iptv.R.id.posterImageView)
 
@@ -50,12 +50,13 @@ class MainActivity : AppCompatActivity() {
 
         val tmdbApiService = retrofit.create(TmdbApiService::class.java)
 
-        // Fetch sample poster metadata (Example query)
+        // Fetch sample poster metadata (Example query: "Inception")
         tmdbApiService.searchMovie("YOUR_TMDB_API_KEY_HERE", "Inception").enqueue(object : Callback<MovieResponse> {
             override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
                 if (response.isSuccessful) {
                     val movie = response.body()?.results?.firstOrNull()
                     val posterPath = movie?.poster_path
+
                     if (!posterPath.isNullOrEmpty()) {
                         val fullPosterUrl = "https://image.tmdb.org/t/p/w500$posterPath"
                         
