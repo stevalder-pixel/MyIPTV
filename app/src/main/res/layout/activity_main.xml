@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:background="#0A0A0F">
 
-    <!-- ULTRA-MODERN ICON-ONLY SIDEBAR DOCK -->
+    <!-- ULTRA-MODERN PURE ICON SIDEBAR DOCK (NO TEXT) -->
     <LinearLayout
         android:id="@+id/sidebarMenu"
         android:layout_width="80dp"
@@ -13,60 +13,64 @@
         android:orientation="vertical"
         android:background="#12121A"
         android:gravity="center_horizontal"
-        android:paddingTop="32dp">
+        android:paddingTop="40dp">
 
-        <!-- BRANDING BALL / LOGO SHAPE -->
+        <!-- MODERN TOP LOGO INDICATOR -->
         <View
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="@android:drawable/presence_online"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="#4CAF50"
             android:layout_marginBottom="48dp"/>
 
         <!-- HOME ICON CONTAINER -->
         <FrameLayout
-            android:layout_width="52dp"
-            android:layout_height="52dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:focusable="true"
             android:clickable="true"
             android:background="?android:attr/selectableItemBackground"
-            android:layout_marginBottom="16dp">
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+            android:layout_marginBottom="24dp">
+            <!-- Universal Text-Fallback Vector Symbol -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@android:drawable/ic_menu_home"
-                android:contentDescription="Home" />
+                android:text="⌂"
+                android:textColor="#FFFFFF"
+                android:textSize="28sp" />
         </FrameLayout>
 
         <!-- MOVIES ICON CONTAINER -->
         <FrameLayout
-            android:layout_width="52dp"
-            android:layout_height="52dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:focusable="true"
             android:clickable="true"
             android:background="?android:attr/selectableItemBackground"
-            android:layout_marginBottom="16dp">
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+            android:layout_marginBottom="24dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@android:drawable/ic_menu_slideshow"
-                android:contentDescription="Movies" />
+                android:text="▷"
+                android:textColor="#9E9E9E"
+                android:textSize="26sp" />
         </FrameLayout>
 
         <!-- SETTINGS ICON CONTAINER -->
         <FrameLayout
-            android:layout_width="52dp"
-            android:layout_height="52dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:focusable="true"
             android:clickable="true"
             android:background="?android:attr/selectableItemBackground">
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@android:drawable/ic_menu_manage"
-                android:contentDescription="Settings" />
+                android:text="⚙"
+                android:textColor="#9E9E9E"
+                android:textSize="24sp" />
         </FrameLayout>
     </LinearLayout>
 
