@@ -12,12 +12,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "MyIPTV_Final"
+
+rootProject.name = "MyIPTV"
 include ':app'
-
-// Force a clean environment on every compilation to sweep out stale R8/Dex caches
-gradle.startParameter.taskNames = ['clean'] + gradle.startParameter.taskNames
-
-// Force a clean environment on every compilation to sweep out stale R8/Dex caches
-gradle.startParameter.taskNames = ['clean'] + gradle.startParameter.taskNames
-// Triggering a fresh automation run
