@@ -14,3 +14,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "MyIPTV_Final"
 include ':app'
+
+// Force a clean environment on every compilation to sweep out stale R8/Dex caches
+gradle.startParameter.taskNames = ['clean'] + gradle.startParameter.taskNames
