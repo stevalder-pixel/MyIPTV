@@ -1,0 +1,6 @@
+R_DEF: Internal format may change without notice
+local
+drawable ic_movie_modern
+drawable ic_series_modern
+drawable ic_settings_modern
+drawable ic_tv_modern
