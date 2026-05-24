@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.widget.VideoView;
 import android.net.Uri;
+// Explicitly import the generated R class to fix dexBuilder failure
+import com.nextgen.iptv.R;
 
 public class MainActivity extends Activity {
 
@@ -15,10 +17,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Added R. class layout pointer
         setContentView(R.layout.activity_main);
 
-        // Added R. class view ID pointers
         posterRecyclerView = findViewById(R.id.posterRecyclerView);
         mainVideoView = findViewById(R.id.mainVideoView);
 
