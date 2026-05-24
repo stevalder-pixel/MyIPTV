@@ -15,18 +15,17 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(layout.activity_main);
+        // Added R. class layout pointer
+        setContentView(R.layout.activity_main);
 
-        // Bind the right-hand media content layouts
-        posterRecyclerView = findViewById(id.posterRecyclerView);
-        mainVideoView = findViewById(id.mainVideoView);
+        // Added R. class view ID pointers
+        posterRecyclerView = findViewById(R.id.posterRecyclerView);
+        mainVideoView = findViewById(R.id.mainVideoView);
 
         if (posterRecyclerView != null) {
             posterRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-            // TMDB parsing logic will bind data straight here without touching the sidebar
         }
 
-        // Initialize a quick sample background stream so the layout isn't dead space
         if (mainVideoView != null) {
             Uri videoUri = Uri.parse("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
             mainVideoView.setVideoURI(videoUri);
