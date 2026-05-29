@@ -2,13 +2,14 @@ package com.nextgen.iptv.ui.livetv
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nextgen.iptv.databinding.FragmentLiveTvBinding
 import com.nextgen.iptv.ui.player.PlayerActivity
@@ -32,6 +33,8 @@ class LiveTvFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         channelAdapter = ChannelAdapter { channel ->
+            binding.nowPlayingChannel.text = channel.name
+            binding.nowPlayingTitle.text = channel.nowPlaying.ifEmpty { "Live" }
             val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
                 putExtra(PlayerActivity.EXTRA_STREAM_URL, channel.url)
                 putExtra(PlayerActivity.EXTRA_TITLE, channel.name)
@@ -40,9 +43,15 @@ class LiveTvFragment : Fragment() {
             startActivity(intent)
         }
 
-        binding.channelRecycler.layoutManager = GridLayoutManager(requireContext(), 5)
+        binding.channelRecycler.layoutManager = LinearLayoutManager(requireContext())
         binding.channelRecycler.adapter = channelAdapter
         binding.epgRecycler.layoutManager = LinearLayoutManager(requireContext())
+
+        binding.channelSearch.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) { viewModel.searchChannels(s.toString()) }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
 
         observeViewModel()
         loadChannels()
@@ -60,7 +69,7 @@ class LiveTvFragment : Fragment() {
                 viewModel.loadChannels()
             } else {
                 binding.emptyText.visibility = View.VISIBLE
-                binding.emptyText.text = "Add your Xtream Codes server in Settings"
+                binding.emptyText.text = "Add Xtream Codes credentials in Settings"
             }
         }
     }
@@ -72,13 +81,14 @@ class LiveTvFragment : Fragment() {
         }
 
         viewModel.categories.observe(viewLifecycleOwner) { categories ->
-            binding.categoryTabs.removeAllTabs()
-            binding.categoryTabs.addTab(binding.categoryTabs.newTab().setText("All").setTag("all"))
-            categories.forEach { cat ->
-                binding.categoryTabs.addTab(
-                    binding.categoryTabs.newTab().setText(cat.categoryName).setTag(cat.categoryId)
-                )
+            val list = mutableListOf(Pair("all", "All"))
+            list.addAll(categories.map { Pair(it.categoryId, it.categoryName) })
+            val adapter = CategoryAdapter(list) { categoryId ->
+                viewModel.filterByCategory(categoryId)
             }
+            binding.categoryRecycler.layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            binding.categoryRecycler.adapter = adapter
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { loading ->
@@ -86,7 +96,10 @@ class LiveTvFragment : Fragment() {
         }
 
         viewModel.error.observe(viewLifecycleOwner) { error ->
-            error?.let { binding.emptyText.text = it; binding.emptyText.visibility = View.VISIBLE }
+            error?.let {
+                binding.emptyText.text = it
+                binding.emptyText.visibility = View.VISIBLE
+            }
         }
     }
 

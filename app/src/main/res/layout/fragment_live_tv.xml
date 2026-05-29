@@ -1,41 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:background="#0A0E1A">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/categoryTabs"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="#880A0E1A"
-        app:tabTextColor="#B0BEC5"
-        app:tabSelectedTextColor="#48CAE4"
-        app:tabIndicatorColor="#48CAE4"
-        app:tabMode="scrollable"/>
+    <!-- Left panel: categories + channels -->
+    <LinearLayout
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#CC111827">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        <!-- Search bar -->
+        <EditText
+            android:id="@+id/channelSearch"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Search channels..."
+            android:textColor="#FFFFFF"
+            android:textColorHint="#607D8B"
+            android:backgroundTint="#48CAE4"
+            android:paddingHorizontal="16dp"
+            android:singleLine="true"
+            android:imeOptions="actionSearch"/>
 
+        <!-- Category list -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/categoryRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="120dp"
+            android:background="#110A0E1A"/>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="#1A48CAE4"/>
+
+        <!-- Channel list - vertical scroll TiviMate style -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/channelRecycler"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="8dp"
-            android:clipToPadding="false"/>
-
-        <TextView
-            android:id="@+id/emptyText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="#B0BEC5"
-            android:textSize="16sp"
-            android:visibility="gone"/>
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -45,13 +51,115 @@
             android:visibility="gone"
             android:indeterminateTint="#48CAE4"/>
 
-    </FrameLayout>
+    </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/epgRecycler"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:background="#111827"
-        android:padding="8dp"/>
+    <View android:layout_width="1dp" android:layout_height="match_parent"
+        android:background="#1A48CAE4"/>
+
+    <!-- Right panel: now playing + EPG -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- Now playing info -->
+        <FrameLayout
+            android:id="@+id/nowPlayingContainer"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:background="#111827">
+
+            <ImageView
+                android:id="@+id/nowPlayingBackdrop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:alpha="0.4"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="6dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" LIVE "
+                        android:textColor="#FFFFFF"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:background="#DDFF4444"
+                        android:paddingHorizontal="6dp"
+                        android:paddingVertical="2dp"/>
+
+                    <TextView
+                        android:id="@+id/nowPlayingChannel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#48CAE4"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:paddingStart="8dp"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/nowPlayingTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/nowPlayingTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#B0BEC5"
+                    android:textSize="12sp"
+                    android:layout_marginTop="2dp"/>
+
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- EPG list -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TV Guide"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="10dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/epgRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"/>
+
+        <TextView
+            android:id="@+id/emptyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="#B0BEC5"
+            android:textSize="14sp"
+            android:padding="24dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
 
 </LinearLayout>
