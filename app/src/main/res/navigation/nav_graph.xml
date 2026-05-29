@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/liveTvFragment">
+    <fragment android:id="@+id/liveTvFragment"
+        android:name="com.nextgen.iptv.ui.livetv.LiveTvFragment"
+        android:label="Live TV" />
+    <fragment android:id="@+id/moviesFragment"
+        android:name="com.nextgen.iptv.ui.movies.MoviesFragment"
+        android:label="Movies" />
+    <fragment android:id="@+id/tvShowsFragment"
+        android:name="com.nextgen.iptv.ui.tv.TvShowsFragment"
+        android:label="TV Shows" />
+    <fragment android:id="@+id/traktFragment"
+        android:name="com.nextgen.iptv.ui.trakt.TraktFragment"
+        android:label="Trakt" />
+    <fragment android:id="@+id/settingsFragment"
+        android:name="com.nextgen.iptv.ui.settings.SettingsFragment"
+        android:label="Settings" />
+    <activity android:id="@+id/playerFragment"
+        android:name="com.nextgen.iptv.ui.player.PlayerActivity"
+        android:label="Player" />
+</navigation>
