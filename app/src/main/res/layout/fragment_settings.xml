@@ -1,32 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/bg_primary">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A0E1A">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:padding="16dp">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TMDB" android:textColor="@color/accent_blue" android:textStyle="bold" android:layout_marginBottom="8dp"/>
-        <EditText android:id="@+id/tmdbApiKeyInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="TMDB API Key" android:textColor="@color/text_primary" android:layout_marginBottom="4dp"/>
-        <Button android:id="@+id/saveTmdbBtn" android:layout_width="wrap_content" android:layout_height="36dp" android:text="Save" android:backgroundTint="@color/accent_blue" android:layout_marginBottom="16dp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Real-Debrid" android:textColor="@color/accent_blue" android:textStyle="bold" android:layout_marginBottom="8dp"/>
-        <EditText android:id="@+id/rdApiKeyInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="API Key" android:textColor="@color/text_primary" android:layout_marginBottom="4dp"/>
-        <Button android:id="@+id/saveRdBtn" android:layout_width="wrap_content" android:layout_height="36dp" android:text="Save" android:backgroundTint="@color/accent_blue" android:layout_marginBottom="16dp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TorBox" android:textColor="@color/accent_blue" android:textStyle="bold" android:layout_marginBottom="8dp"/>
-        <EditText android:id="@+id/torboxApiKeyInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="API Key" android:textColor="@color/text_primary" android:layout_marginBottom="4dp"/>
-        <Button android:id="@+id/saveTorboxBtn" android:layout_width="wrap_content" android:layout_height="36dp" android:text="Save" android:backgroundTint="@color/accent_blue" android:layout_marginBottom="16dp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AllDebrid" android:textColor="@color/accent_blue" android:textStyle="bold" android:layout_marginBottom="8dp"/>
-        <EditText android:id="@+id/alldebridApiKeyInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="API Key" android:textColor="@color/text_primary" android:layout_marginBottom="4dp"/>
-        <Button android:id="@+id/saveAlldebridBtn" android:layout_width="wrap_content" android:layout_height="36dp" android:text="Save" android:backgroundTint="@color/accent_blue" android:layout_marginBottom="16dp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Premiumize" android:textColor="@color/accent_blue" android:textStyle="bold" android:layout_marginBottom="8dp"/>
-        <EditText android:id="@+id/premiumizeApiKeyInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="API Key" android:textColor="@color/text_primary" android:layout_marginBottom="4dp"/>
-        <Button android:id="@+id/savePremiumizeBtn" android:layout_width="wrap_content" android:layout_height="36dp" android:text="Save" android:backgroundTint="@color/accent_blue" android:layout_marginBottom="16dp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Trakt" android:textColor="@color/accent_blue" android:textStyle="bold" android:layout_marginBottom="8dp"/>
-        <Button android:id="@+id/traktLoginBtn" android:layout_width="wrap_content" android:layout_height="40dp" android:text="Login with Trakt" android:backgroundTint="@color/accent_blue" android:layout_marginBottom="16dp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="M3U Playlist" android:textColor="@color/accent_blue" android:textStyle="bold" android:layout_marginBottom="8dp"/>
-        <EditText android:id="@+id/m3uUrlInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="M3U URL" android:textColor="@color/text_primary" android:layout_marginBottom="4dp"/>
-        <Button android:id="@+id/saveM3uBtn" android:layout_width="wrap_content" android:layout_height="36dp" android:text="Save" android:backgroundTint="@color/accent_blue" android:layout_marginBottom="16dp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Stalker Portal" android:textColor="@color/accent_blue" android:textStyle="bold" android:layout_marginBottom="8dp"/>
-        <EditText android:id="@+id/stalkerUrlInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Portal URL" android:textColor="@color/text_primary" android:layout_marginBottom="8dp"/>
-        <EditText android:id="@+id/stalkerMacInput" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="MAC Address" android:textColor="@color/text_primary" android:layout_marginBottom="4dp"/>
-        <Button android:id="@+id/saveStalkerBtn" android:layout_width="wrap_content" android:layout_height="36dp" android:text="Save" android:backgroundTint="@color/accent_blue" android:layout_marginBottom="24dp"/>
+        android:orientation="vertical" android:padding="24dp">
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="TMDB" android:textColor="#48CAE4" android:textSize="16sp"
+            android:textStyle="bold" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/tmdbApiKeyInput" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="API Key"
+            android:textColor="#FFFFFF" android:textColorHint="#607D8B"
+            android:backgroundTint="#48CAE4" android:layout_marginBottom="8dp"/>
+        <Button android:id="@+id/saveTmdbBtn" android:layout_width="wrap_content"
+            android:layout_height="36dp" android:text="Save"
+            android:backgroundTint="#48CAE4" android:layout_marginBottom="24dp"/>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Xtream Codes" android:textColor="#48CAE4" android:textSize="16sp"
+            android:textStyle="bold" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/xtreamUrlInput" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="Server URL (http://server:port)"
+            android:textColor="#FFFFFF" android:textColorHint="#607D8B"
+            android:backgroundTint="#48CAE4" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/xtreamUsernameInput" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="Username"
+            android:textColor="#FFFFFF" android:textColorHint="#607D8B"
+            android:backgroundTint="#48CAE4" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/xtreamPasswordInput" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="Password"
+            android:textColor="#FFFFFF" android:textColorHint="#607D8B"
+            android:backgroundTint="#48CAE4" android:inputType="textPassword"
+            android:layout_marginBottom="8dp"/>
+        <Button android:id="@+id/saveXtreamBtn" android:layout_width="wrap_content"
+            android:layout_height="36dp" android:text="Save &amp; Connect"
+            android:backgroundTint="#48CAE4" android:layout_marginBottom="24dp"/>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Trakt" android:textColor="#48CAE4" android:textSize="16sp"
+            android:textStyle="bold" android:layout_marginBottom="8dp"/>
+        <TextView android:id="@+id/traktStatusText" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="Not Connected"
+            android:textColor="#B0BEC5" android:layout_marginBottom="8dp"/>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="8dp">
+            <Button android:id="@+id/traktQrBtn" android:layout_width="0dp"
+                android:layout_height="40dp" android:layout_weight="1"
+                android:text="QR Login" android:backgroundTint="#48CAE4" android:layout_marginEnd="8dp"/>
+            <Button android:id="@+id/traktLoginBtn" android:layout_width="0dp"
+                android:layout_height="40dp" android:layout_weight="1"
+                android:text="Login" android:backgroundTint="#1A2235"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:text="Auto Scrobble"
+                android:textColor="#FFFFFF"/>
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/autoScrobbleSwitch" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:checked="true"/>
+        </LinearLayout>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Real-Debrid" android:textColor="#48CAE4" android:textSize="16sp"
+            android:textStyle="bold" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/rdApiKeyInput" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="API Key"
+            android:textColor="#FFFFFF" android:textColorHint="#607D8B"
+            android:backgroundTint="#48CAE4" android:inputType="textPassword"
+            android:layout_marginBottom="8dp"/>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="24dp">
+            <Button android:id="@+id/saveRdBtn" android:layout_width="0dp"
+                android:layout_height="36dp" android:layout_weight="1"
+                android:text="Save" android:backgroundTint="#48CAE4" android:layout_marginEnd="8dp"/>
+            <Button android:id="@+id/rdQrBtn" android:layout_width="0dp"
+                android:layout_height="36dp" android:layout_weight="1"
+                android:text="QR Scan" android:backgroundTint="#1A2235"/>
+        </LinearLayout>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="TorBox" android:textColor="#48CAE4" android:textSize="16sp"
+            android:textStyle="bold" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/torboxApiKeyInput" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="API Key"
+            android:textColor="#FFFFFF" android:textColorHint="#607D8B"
+            android:backgroundTint="#48CAE4" android:inputType="textPassword"
+            android:layout_marginBottom="8dp"/>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="24dp">
+            <Button android:id="@+id/saveTorboxBtn" android:layout_width="0dp"
+                android:layout_height="36dp" android:layout_weight="1"
+                android:text="Save" android:backgroundTint="#48CAE4" android:layout_marginEnd="8dp"/>
+            <Button android:id="@+id/torboxQrBtn" android:layout_width="0dp"
+                android:layout_height="36dp" android:layout_weight="1"
+                android:text="QR Scan" android:backgroundTint="#1A2235"/>
+        </LinearLayout>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="AllDebrid" android:textColor="#48CAE4" android:textSize="16sp"
+            android:textStyle="bold" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/alldebridApiKeyInput" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="API Key"
+            android:textColor="#FFFFFF" android:textColorHint="#607D8B"
+            android:backgroundTint="#48CAE4" android:inputType="textPassword"
+            android:layout_marginBottom="8dp"/>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="24dp">
+            <Button android:id="@+id/saveAlldebridBtn" android:layout_width="0dp"
+                android:layout_height="36dp" android:layout_weight="1"
+                android:text="Save" android:backgroundTint="#48CAE4" android:layout_marginEnd="8dp"/>
+            <Button android:id="@+id/alldebridQrBtn" android:layout_width="0dp"
+                android:layout_height="36dp" android:layout_weight="1"
+                android:text="QR Scan" android:backgroundTint="#1A2235"/>
+        </LinearLayout>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Premiumize" android:textColor="#48CAE4" android:textSize="16sp"
+            android:textStyle="bold" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/premiumizeApiKeyInput" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="API Key"
+            android:textColor="#FFFFFF" android:textColorHint="#607D8B"
+            android:backgroundTint="#48CAE4" android:inputType="textPassword"
+            android:layout_marginBottom="8dp"/>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="24dp">
+            <Button android:id="@+id/savePremiumizeBtn" android:layout_width="0dp"
+                android:layout_height="36dp" android:layout_weight="1"
+                android:text="Save" android:backgroundTint="#48CAE4" android:layout_marginEnd="8dp"/>
+            <Button android:id="@+id/premiumizeQrBtn" android:layout_width="0dp"
+                android:layout_height="36dp" android:layout_weight="1"
+                android:text="QR Scan" android:backgroundTint="#1A2235"/>
+        </LinearLayout>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="M3U Playlist" android:textColor="#48CAE4" android:textSize="16sp"
+            android:textStyle="bold" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/m3uUrlInput" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="M3U URL"
+            android:textColor="#FFFFFF" android:textColorHint="#607D8B"
+            android:backgroundTint="#48CAE4" android:layout_marginBottom="8dp"/>
+        <Button android:id="@+id/saveM3uBtn" android:layout_width="wrap_content"
+            android:layout_height="36dp" android:text="Save"
+            android:backgroundTint="#48CAE4" android:layout_marginBottom="24dp"/>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Stalker Portal" android:textColor="#48CAE4" android:textSize="16sp"
+            android:textStyle="bold" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/stalkerUrlInput" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="Portal URL"
+            android:textColor="#FFFFFF" android:textColorHint="#607D8B"
+            android:backgroundTint="#48CAE4" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/stalkerMacInput" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="MAC Address"
+            android:textColor="#FFFFFF" android:textColorHint="#607D8B"
+            android:backgroundTint="#48CAE4" android:layout_marginBottom="8dp"/>
+        <Button android:id="@+id/saveStalkerBtn" android:layout_width="wrap_content"
+            android:layout_height="36dp" android:text="Save"
+            android:backgroundTint="#48CAE4" android:layout_marginBottom="24dp"/>
+
     </LinearLayout>
 </ScrollView>
