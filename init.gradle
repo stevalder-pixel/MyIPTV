@@ -1,1 +1,0 @@
-gradle.startParameter.taskNames = ['clean'] + gradle.startParameter.taskNames
