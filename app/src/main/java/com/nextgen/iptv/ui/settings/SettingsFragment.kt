@@ -23,11 +23,6 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadValues()
-        setupButtons()
-    }
-
-    private fun loadValues() {
         lifecycleScope.launch {
             val ctx = requireContext()
             binding.tmdbApiKeyInput.setText(AppPreferences.getTmdbApiKey(ctx).first() as CharSequence)
@@ -43,9 +38,6 @@ class SettingsFragment : Fragment() {
             binding.xtreamPasswordInput.setText(AppPreferences.getXtreamPassword(ctx).first() as CharSequence)
             binding.autoScrobbleSwitch.isChecked = AppPreferences.getAutoScrobble(ctx).first()
         }
-    }
-
-    private fun setupButtons() {
         binding.saveTmdbBtn.setOnClickListener { save { AppPreferences.setTmdbApiKey(requireContext(), binding.tmdbApiKeyInput.text.toString()) }; toast("TMDB saved") }
         binding.saveRdBtn.setOnClickListener { save { AppPreferences.setRdApiKey(requireContext(), binding.rdApiKeyInput.text.toString()) }; toast("Real-Debrid saved") }
         binding.saveTorboxBtn.setOnClickListener { save { AppPreferences.setTorBoxApiKey(requireContext(), binding.torboxApiKeyInput.text.toString()) }; toast("TorBox saved") }
@@ -53,25 +45,9 @@ class SettingsFragment : Fragment() {
         binding.savePremiumizeBtn.setOnClickListener { save { AppPreferences.setPremiumizeApiKey(requireContext(), binding.premiumizeApiKeyInput.text.toString()) }; toast("Premiumize saved") }
         binding.saveM3uBtn.setOnClickListener { save { AppPreferences.setM3uUrl(requireContext(), binding.m3uUrlInput.text.toString()) }; toast("M3U saved") }
         binding.saveStalkerBtn.setOnClickListener { save { AppPreferences.setStalkerPortal(requireContext(), binding.stalkerUrlInput.text.toString(), binding.stalkerMacInput.text.toString()) }; toast("Stalker saved") }
-        binding.saveXtreamBtn.setOnClickListener {
-            save {
-                AppPreferences.setXtreamCredentials(
-                    requireContext(),
-                    binding.xtreamUrlInput.text.toString(),
-                    binding.xtreamUsernameInput.text.toString(),
-                    binding.xtreamPasswordInput.text.toString()
-                )
-            }
-            toast("Xtream saved — go to Live TV!")
-        }
-        binding.autoScrobbleSwitch.setOnCheckedChangeListener { _, checked ->
-            save { AppPreferences.setAutoScrobble(requireContext(), checked) }
-        }
-        binding.rdQrBtn.setOnClickListener { toast("QR scan coming soon") }
-        binding.torboxQrBtn.setOnClickListener { toast("QR scan coming soon") }
-        binding.alldebridQrBtn.setOnClickListener { toast("QR scan coming soon") }
-        binding.premiumizeQrBtn.setOnClickListener { toast("QR scan coming soon") }
-        binding.traktQrBtn.setOnClickListener { toast("QR scan coming soon") }
+        binding.saveXtreamBtn.setOnClickListener { save { AppPreferences.setXtreamCredentials(requireContext(), binding.xtreamUrlInput.text.toString(), binding.xtreamUsernameInput.text.toString(), binding.xtreamPasswordInput.text.toString()) }; toast("Xtream saved!") }
+        binding.autoScrobbleSwitch.setOnCheckedChangeListener { _, checked -> save { AppPreferences.setAutoScrobble(requireContext(), checked) } }
+        listOf(binding.rdQrBtn, binding.torboxQrBtn, binding.alldebridQrBtn, binding.premiumizeQrBtn, binding.traktQrBtn).forEach { it.setOnClickListener { toast("QR scan coming soon") } }
         binding.traktLoginBtn.setOnClickListener { toast("Trakt OAuth coming soon") }
     }
 

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/liveTvFragment" android:icon="@drawable/ic_live_tv" android:title="Live TV" />
-    <item android:id="@+id/moviesFragment" android:icon="@drawable/ic_movies" android:title="Movies" />
-    <item android:id="@+id/tvShowsFragment" android:icon="@drawable/ic_tv_shows" android:title="TV Shows" />
-    <item android:id="@+id/traktFragment" android:icon="@drawable/ic_trakt" android:title="Trakt" />
-    <item android:id="@+id/settingsFragment" android:icon="@drawable/ic_settings" android:title="Settings" />
-</menu>

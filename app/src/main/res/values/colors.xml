@@ -3,19 +3,14 @@
     <color name="bg_primary">#0A0E1A</color>
     <color name="bg_secondary">#111827</color>
     <color name="bg_card">#1A2235</color>
-    <color name="bg_card_hover">#243047</color>
-    <color name="surface_transparent">#99111827</color>
-    <color name="sidebar_bg">#CC0A0E1A</color>
+    <color name="surface_transparent">#880A0E1A</color>
     <color name="accent_blue">#48CAE4</color>
     <color name="accent_blue_dark">#0096C7</color>
-    <color name="accent_blue_light">#90E0EF</color>
-    <color name="accent_glow">#2048CAE4</color>
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#B0BEC5</color>
     <color name="text_hint">#607D8B</color>
     <color name="live_red">#FF4444</color>
-    <color name="success_green">#4CAF50</color>
-    <color name="warning_amber">#FFC107</color>
     <color name="nav_icon_active">#48CAE4</color>
     <color name="nav_icon_inactive">#607D8B</color>
+    <color name="sidebar_collapsed_bg">#CC0A0E1A</color>
 </resources>

@@ -4,58 +4,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_primary">
+    android:background="#0A0E1A">
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph"
-        app:layout_constraintTop_toBottomOf="@id/topBar"
-        app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintStart_toEndOf="@id/sidebarContainer"
-        app:layout_constraintEnd_toEndOf="parent" />
-    <LinearLayout
-        android:id="@+id/topBar"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:orientation="horizontal"
-        android:background="@color/surface_transparent"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/sidebarContainer"
-        app:layout_constraintEnd_toEndOf="parent">
-        <TextView
-            android:id="@+id/topBarTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="MyIPTV Hub"
-            android:textColor="@color/text_primary"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-        <ImageButton
-            android:id="@+id/topBarSearch"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_search"
-            android:tint="@color/text_primary" />
-    </LinearLayout>
-    <ImageButton
-        android:id="@+id/topBarToggle"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_menu"
-        android:tint="@color/text_primary"
-        android:padding="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="4dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
     <View
         android:id="@+id/sidebarOverlay"
         android:layout_width="match_parent"
@@ -63,45 +25,124 @@
         android:background="#66000000"
         android:alpha="0"
         android:visibility="gone"
+        android:clickable="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"/>
+
     <LinearLayout
         android:id="@+id/sidebarContainer"
-        android:layout_width="@dimen/sidebar_collapsed_width"
-        android:layout_height="0dp"
+        android:layout_width="72dp"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@drawable/sidebar_bg"
-        android:paddingTop="16dp"
+        android:background="#CC0A0E1A"
+        android:elevation="12dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-        <ImageButton
-            android:id="@+id/sidebarToggle"
+
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_chevron_right"
-            android:tint="@color/accent_blue"
-            android:layout_marginBottom="8dp" />
-        <com.google.android.material.navigation.NavigationView
-            android:id="@+id/sideNav"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            app:itemTextColor="@color/text_primary"
-            app:itemIconTint="@color/nav_icon_tint"
-            app:menu="@menu/nav_menu" />
+            android:layout_height="72dp">
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_launcher"
+                android:scaleType="fitCenter"/>
+            <TextView
+                android:id="@+id/sidebarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="56dp"
+                android:text="MyIPTV Hub"
+                android:textColor="#48CAE4"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+        </FrameLayout>
+
+        <View android:layout_width="36dp" android:layout_height="1dp"
+            android:layout_gravity="center_horizontal"
+            android:background="#2248CAE4" android:layout_marginBottom="8dp"/>
+
+        <LinearLayout android:id="@+id/navHome"
+            android:layout_width="match_parent" android:layout_height="56dp"
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:paddingStart="18dp" android:focusable="true"
+            android:background="?attr/selectableItemBackground">
+            <ImageView android:id="@+id/navHomeIcon"
+                android:layout_width="30dp" android:layout_height="30dp"
+                android:src="@drawable/ic_home" android:tint="#48CAE4"/>
+            <TextView android:id="@+id/navHomeLabel"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Home" android:textColor="#FFFFFF" android:textSize="15sp"
+                android:paddingStart="16dp" android:visibility="gone"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/navMovies"
+            android:layout_width="match_parent" android:layout_height="56dp"
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:paddingStart="18dp" android:focusable="true"
+            android:background="?attr/selectableItemBackground">
+            <ImageView android:id="@+id/navMoviesIcon"
+                android:layout_width="30dp" android:layout_height="30dp"
+                android:src="@drawable/ic_movies" android:tint="#607D8B"/>
+            <TextView android:id="@+id/navMoviesLabel"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Movies" android:textColor="#B0BEC5" android:textSize="15sp"
+                android:paddingStart="16dp" android:visibility="gone"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/navTvShows"
+            android:layout_width="match_parent" android:layout_height="56dp"
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:paddingStart="18dp" android:focusable="true"
+            android:background="?attr/selectableItemBackground">
+            <ImageView android:id="@+id/navTvShowsIcon"
+                android:layout_width="30dp" android:layout_height="30dp"
+                android:src="@drawable/ic_tv_shows" android:tint="#607D8B"/>
+            <TextView android:id="@+id/navTvShowsLabel"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="TV Shows" android:textColor="#B0BEC5" android:textSize="15sp"
+                android:paddingStart="16dp" android:visibility="gone"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/navLiveTv"
+            android:layout_width="match_parent" android:layout_height="56dp"
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:paddingStart="18dp" android:focusable="true"
+            android:background="?attr/selectableItemBackground">
+            <ImageView android:id="@+id/navLiveTvIcon"
+                android:layout_width="30dp" android:layout_height="30dp"
+                android:src="@drawable/ic_live_tv" android:tint="#607D8B"/>
+            <TextView android:id="@+id/navLiveTvLabel"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Live TV" android:textColor="#B0BEC5" android:textSize="15sp"
+                android:paddingStart="16dp" android:visibility="gone"/>
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"/>
+
+        <View android:layout_width="36dp" android:layout_height="1dp"
+            android:layout_gravity="center_horizontal"
+            android:background="#2248CAE4" android:layout_marginBottom="8dp"/>
+
+        <LinearLayout android:id="@+id/navSettings"
+            android:layout_width="match_parent" android:layout_height="56dp"
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:paddingStart="18dp" android:focusable="true"
+            android:layout_marginBottom="8dp"
+            android:background="?attr/selectableItemBackground">
+            <ImageView android:id="@+id/navSettingsIcon"
+                android:layout_width="30dp" android:layout_height="30dp"
+                android:src="@drawable/ic_settings" android:tint="#607D8B"/>
+            <TextView android:id="@+id/navSettingsLabel"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Settings" android:textColor="#B0BEC5" android:textSize="15sp"
+                android:paddingStart="16dp" android:visibility="gone"/>
+        </LinearLayout>
+
     </LinearLayout>
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:background="@color/surface_transparent"
-        app:itemTextColor="@color/text_primary"
-        app:itemIconTint="@color/nav_icon_tint"
-        app:menu="@menu/nav_menu"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,17 +12,5 @@ data class Channel(
     val nextUp: String = ""
 )
 
-data class EpgEntry(
-    val channelId: String,
-    val title: String,
-    val description: String = "",
-    val startTime: Long,
-    val endTime: Long
-)
-
-data class PlaybackItem(
-    val title: String,
-    val streamUrl: String,
-    val posterUrl: String = "",
-    val isLiveStream: Boolean = false
-)
+data class EpgEntry(val channelId: String, val title: String, val description: String = "", val startTime: Long = 0, val endTime: Long = 0)
+data class PlaybackItem(val title: String, val streamUrl: String, val posterUrl: String = "", val isLiveStream: Boolean = false)

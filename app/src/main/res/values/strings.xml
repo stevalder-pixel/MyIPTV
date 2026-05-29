@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MyIPTV Hub</string>
-    <string name="live_tv">Live TV</string>
+    <string name="home">Home</string>
     <string name="movies">Movies</string>
     <string name="tv_shows">TV Shows</string>
-    <string name="trakt">Trakt</string>
+    <string name="live_tv">Live TV</string>
     <string name="settings">Settings</string>
-    <string name="save">Save</string>
-    <string name="connect">Connect</string>
-    <string name="connected">Connected</string>
-    <string name="login_with_trakt">Login with Trakt</string>
-    <string name="watchlist">Watchlist</string>
-    <string name="history">History</string>
-    <string name="recommendations">Recommendations</string>
 </resources>

@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_primary">
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/showsGrid"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp"
-        android:clipToPadding="false" />
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
-</FrameLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="#0A0E1A">
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/showsTabs"
+        android:layout_width="match_parent" android:layout_height="52dp"
+        android:background="#880A0E1A"
+        app:tabTextColor="#607D8B" app:tabSelectedTextColor="#48CAE4"
+        app:tabIndicatorColor="#48CAE4">
+        <com.google.android.material.tabs.TabItem android:text="Trending"/>
+        <com.google.android.material.tabs.TabItem android:text="Popular"/>
+        <com.google.android.material.tabs.TabItem android:text="Top Rated"/>
+    </com.google.android.material.tabs.TabLayout>
+    <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/showsGrid"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:padding="8dp" android:clipToPadding="false"/>
+        <ProgressBar android:id="@+id/progressBar"
+            android:layout_width="48dp" android:layout_height="48dp"
+            android:layout_gravity="center" android:visibility="gone"
+            android:indeterminateTint="#48CAE4"/>
+    </FrameLayout>
+</LinearLayout>

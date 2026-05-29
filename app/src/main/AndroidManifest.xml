@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
-    <uses-feature android:name="android.hardware.microphone" android:required="false" />
-    <uses-feature android:name="android.software.leanback" android:required="true" />
-
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false"/>
+    <uses-feature android:name="android.hardware.microphone" android:required="false"/>
+    <uses-feature android:name="android.software.leanback" android:required="true"/>
     <application
         android:allowBackup="true"
         android:banner="@drawable/app_banner"
@@ -15,27 +12,18 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.MyIPTV"
         android:usesCleartextTraffic="true">
-
-        <activity
-            android:name=".ui.MainActivity"
-            android:exported="true"
+        <activity android:name=".ui.MainActivity" android:exported="true"
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize"
             android:launchMode="singleTop">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".ui.player.PlayerActivity"
-            android:exported="false"
+        <activity android:name=".ui.player.PlayerActivity" android:exported="false"
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize"
-            android:launchMode="singleTop"
-            android:screenOrientation="landscape"
-            android:theme="@style/Theme.MyIPTV.Player" />
-
+            android:launchMode="singleTop" android:screenOrientation="landscape"
+            android:theme="@style/Theme.MyIPTV.Player"/>
     </application>
-
 </manifest>

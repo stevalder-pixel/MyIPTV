@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class LiveTvFragment : Fragment() {
-
     private var _binding: FragmentLiveTvBinding? = null
     private val binding get() = _binding!!
     private val viewModel: LiveTvViewModel by viewModels()
@@ -31,28 +30,23 @@ class LiveTvFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         channelAdapter = ChannelAdapter { channel ->
             binding.nowPlayingChannel.text = channel.name
             binding.nowPlayingTitle.text = channel.nowPlaying.ifEmpty { "Live" }
-            val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
+            startActivity(Intent(requireContext(), PlayerActivity::class.java).apply {
                 putExtra(PlayerActivity.EXTRA_STREAM_URL, channel.url)
                 putExtra(PlayerActivity.EXTRA_TITLE, channel.name)
                 putExtra(PlayerActivity.EXTRA_IS_LIVE, true)
-            }
-            startActivity(intent)
+            })
         }
-
         binding.channelRecycler.layoutManager = LinearLayoutManager(requireContext())
         binding.channelRecycler.adapter = channelAdapter
         binding.epgRecycler.layoutManager = LinearLayoutManager(requireContext())
-
         binding.channelSearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) { viewModel.searchChannels(s.toString()) }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
-
         observeViewModel()
         loadChannels()
     }
@@ -60,16 +54,15 @@ class LiveTvFragment : Fragment() {
     private fun loadChannels() {
         lifecycleScope.launch {
             val ctx = requireContext()
-            val serverUrl = AppPreferences.getXtreamUrl(ctx).first()
-            val username = AppPreferences.getXtreamUsername(ctx).first()
-            val password = AppPreferences.getXtreamPassword(ctx).first()
-
-            if (serverUrl.isNotEmpty() && username.isNotEmpty()) {
-                viewModel.configure(serverUrl, username, password)
+            val url = AppPreferences.getXtreamUrl(ctx).first()
+            val user = AppPreferences.getXtreamUsername(ctx).first()
+            val pass = AppPreferences.getXtreamPassword(ctx).first()
+            if (url.isNotEmpty() && user.isNotEmpty()) {
+                viewModel.configure(url, user, pass)
                 viewModel.loadChannels()
             } else {
+                binding.emptyText.text = "Go to Settings and add your Xtream Codes server"
                 binding.emptyText.visibility = View.VISIBLE
-                binding.emptyText.text = "Add Xtream Codes credentials in Settings"
             }
         }
     }
@@ -79,28 +72,14 @@ class LiveTvFragment : Fragment() {
             channelAdapter.submitList(channels)
             binding.emptyText.visibility = if (channels.isEmpty()) View.VISIBLE else View.GONE
         }
-
         viewModel.categories.observe(viewLifecycleOwner) { categories ->
             val list = mutableListOf(Pair("all", "All"))
             list.addAll(categories.map { Pair(it.categoryId, it.categoryName) })
-            val adapter = CategoryAdapter(list) { categoryId ->
-                viewModel.filterByCategory(categoryId)
-            }
-            binding.categoryRecycler.layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            binding.categoryRecycler.adapter = adapter
+            binding.categoryRecycler.layoutManager = LinearLayoutManager(requireContext())
+            binding.categoryRecycler.adapter = CategoryAdapter(list) { viewModel.filterByCategory(it) }
         }
-
-        viewModel.isLoading.observe(viewLifecycleOwner) { loading ->
-            binding.progressBar.visibility = if (loading) View.VISIBLE else View.GONE
-        }
-
-        viewModel.error.observe(viewLifecycleOwner) { error ->
-            error?.let {
-                binding.emptyText.text = it
-                binding.emptyText.visibility = View.VISIBLE
-            }
-        }
+        viewModel.isLoading.observe(viewLifecycleOwner) { binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE }
+        viewModel.error.observe(viewLifecycleOwner) { it?.let { binding.emptyText.text = it; binding.emptyText.visibility = View.VISIBLE } }
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }
