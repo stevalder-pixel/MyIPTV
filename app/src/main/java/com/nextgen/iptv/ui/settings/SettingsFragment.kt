@@ -1,6 +1,5 @@
 package com.nextgen.iptv.ui.settings
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +7,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.google.zxing.integration.android.IntentIntegrator
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanIntentResult
+import com.journeyapps.barcodescanner.ScanOptions
 import com.nextgen.iptv.databinding.FragmentSettingsBinding
 import com.nextgen.iptv.util.AppPreferences
 import kotlinx.coroutines.flow.first
@@ -33,17 +34,17 @@ class SettingsFragment : Fragment() {
     private fun loadValues() {
         lifecycleScope.launch {
             val ctx = requireContext()
-            binding.tmdbApiKeyInput.setText(AppPreferences.getTmdbApiKey(ctx).first())
-            binding.rdApiKeyInput.setText(AppPreferences.getRdApiKey(ctx).first())
-            binding.torboxApiKeyInput.setText(AppPreferences.getTorBoxApiKey(ctx).first())
-            binding.alldebridApiKeyInput.setText(AppPreferences.getAllDebridApiKey(ctx).first())
-            binding.premiumizeApiKeyInput.setText(AppPreferences.getPremiumizeApiKey(ctx).first())
-            binding.m3uUrlInput.setText(AppPreferences.getM3uUrl(ctx).first())
-            binding.stalkerUrlInput.setText(AppPreferences.getStalkerPortalUrl(ctx).first())
-            binding.stalkerMacInput.setText(AppPreferences.getStalkerMac(ctx).first())
-            binding.xtreamUrlInput.setText(AppPreferences.getXtreamUrl(ctx).first())
-            binding.xtreamUsernameInput.setText(AppPreferences.getXtreamUsername(ctx).first())
-            binding.xtreamPasswordInput.setText(AppPreferences.getXtreamPassword(ctx).first())
+            binding.tmdbApiKeyInput.setText(AppPreferences.getTmdbApiKey(ctx).first() as CharSequence)
+            binding.rdApiKeyInput.setText(AppPreferences.getRdApiKey(ctx).first() as CharSequence)
+            binding.torboxApiKeyInput.setText(AppPreferences.getTorBoxApiKey(ctx).first() as CharSequence)
+            binding.alldebridApiKeyInput.setText(AppPreferences.getAllDebridApiKey(ctx).first() as CharSequence)
+            binding.premiumizeApiKeyInput.setText(AppPreferences.getPremiumizeApiKey(ctx).first() as CharSequence)
+            binding.m3uUrlInput.setText(AppPreferences.getM3uUrl(ctx).first() as CharSequence)
+            binding.stalkerUrlInput.setText(AppPreferences.getStalkerPortalUrl(ctx).first() as CharSequence)
+            binding.stalkerMacInput.setText(AppPreferences.getStalkerMac(ctx).first() as CharSequence)
+            binding.xtreamUrlInput.setText(AppPreferences.getXtreamUrl(ctx).first() as CharSequence)
+            binding.xtreamUsernameInput.setText(AppPreferences.getXtreamUsername(ctx).first() as CharSequence)
+            binding.xtreamPasswordInput.setText(AppPreferences.getXtreamPassword(ctx).first() as CharSequence)
             binding.autoScrobbleSwitch.isChecked = AppPreferences.getAutoScrobble(ctx).first()
         }
     }
@@ -78,28 +79,28 @@ class SettingsFragment : Fragment() {
         binding.traktLoginBtn.setOnClickListener { toast("Trakt OAuth coming soon") }
     }
 
-    private fun launchQr(target: String) {
-        pendingQrTarget = target
-        IntentIntegrator.forSupportFragment(this).apply {
-            setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
-            setPrompt("Scan QR for $target")
-            setBeepEnabled(true)
-            initiateScan()
-        }
+    private val scanLauncher = registerForActivityResult(ScanContract()) { result: ScanIntentResult ->
+        if (result.contents != null) handleQrResult(result.contents)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        if (result?.contents != null) {
-            val scanned = result.contents
-            when (pendingQrTarget) {
-                "rd" -> { binding.rdApiKeyInput.setText(scanned); save { AppPreferences.setRdApiKey(requireContext(), scanned) }; toast("Real-Debrid scanned") }
-                "torbox" -> { binding.torboxApiKeyInput.setText(scanned); save { AppPreferences.setTorBoxApiKey(requireContext(), scanned) }; toast("TorBox scanned") }
-                "alldebrid" -> { binding.alldebridApiKeyInput.setText(scanned); save { AppPreferences.setAllDebridApiKey(requireContext(), scanned) }; toast("AllDebrid scanned") }
-                "premiumize" -> { binding.premiumizeApiKeyInput.setText(scanned); save { AppPreferences.setPremiumizeApiKey(requireContext(), scanned) }; toast("Premiumize scanned") }
-                "trakt" -> { save { AppPreferences.setTraktAccessToken(requireContext(), scanned) }; toast("Trakt scanned") }
-            }
-        } else super.onActivityResult(requestCode, resultCode, data)
+    private fun launchQr(target: String) {
+        pendingQrTarget = target
+        val options = ScanOptions().apply {
+            setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+            setPrompt("Scan QR for $target")
+            setBeepEnabled(true)
+        }
+        scanLauncher.launch(options)
+    }
+
+    private fun handleQrResult(scanned: String) {
+        when (pendingQrTarget) {
+            "rd" -> { binding.rdApiKeyInput.setText(scanned as CharSequence); save { AppPreferences.setRdApiKey(requireContext(), scanned) }; toast("Real-Debrid scanned") }
+            "torbox" -> { binding.torboxApiKeyInput.setText(scanned as CharSequence); save { AppPreferences.setTorBoxApiKey(requireContext(), scanned) }; toast("TorBox scanned") }
+            "alldebrid" -> { binding.alldebridApiKeyInput.setText(scanned as CharSequence); save { AppPreferences.setAllDebridApiKey(requireContext(), scanned) }; toast("AllDebrid scanned") }
+            "premiumize" -> { binding.premiumizeApiKeyInput.setText(scanned as CharSequence); save { AppPreferences.setPremiumizeApiKey(requireContext(), scanned) }; toast("Premiumize scanned") }
+            "trakt" -> { save { AppPreferences.setTraktAccessToken(requireContext(), scanned) }; toast("Trakt scanned") }
+        }
     }
 
     private fun save(block: suspend () -> Unit) { lifecycleScope.launch { block() } }
