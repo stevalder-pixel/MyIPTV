@@ -7,9 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.journeyapps.barcodescanner.ScanContract
-import com.journeyapps.barcodescanner.ScanIntentResult
-import com.journeyapps.barcodescanner.ScanOptions
 import com.nextgen.iptv.databinding.FragmentSettingsBinding
 import com.nextgen.iptv.util.AppPreferences
 import kotlinx.coroutines.flow.first
@@ -18,7 +15,6 @@ import kotlinx.coroutines.launch
 class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
-    private var pendingQrTarget = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
@@ -66,41 +62,17 @@ class SettingsFragment : Fragment() {
                     binding.xtreamPasswordInput.text.toString()
                 )
             }
-            toast("Xtream credentials saved")
+            toast("Xtream saved — go to Live TV!")
         }
         binding.autoScrobbleSwitch.setOnCheckedChangeListener { _, checked ->
             save { AppPreferences.setAutoScrobble(requireContext(), checked) }
         }
-        binding.rdQrBtn.setOnClickListener { launchQr("rd") }
-        binding.torboxQrBtn.setOnClickListener { launchQr("torbox") }
-        binding.alldebridQrBtn.setOnClickListener { launchQr("alldebrid") }
-        binding.premiumizeQrBtn.setOnClickListener { launchQr("premiumize") }
-        binding.traktQrBtn.setOnClickListener { launchQr("trakt") }
+        binding.rdQrBtn.setOnClickListener { toast("QR scan coming soon") }
+        binding.torboxQrBtn.setOnClickListener { toast("QR scan coming soon") }
+        binding.alldebridQrBtn.setOnClickListener { toast("QR scan coming soon") }
+        binding.premiumizeQrBtn.setOnClickListener { toast("QR scan coming soon") }
+        binding.traktQrBtn.setOnClickListener { toast("QR scan coming soon") }
         binding.traktLoginBtn.setOnClickListener { toast("Trakt OAuth coming soon") }
-    }
-
-    private val scanLauncher = registerForActivityResult(ScanContract()) { result: ScanIntentResult ->
-        if (result.contents != null) handleQrResult(result.contents)
-    }
-
-    private fun launchQr(target: String) {
-        pendingQrTarget = target
-        val options = ScanOptions().apply {
-            setDesiredBarcodeFormats(ScanOptions.QR_CODE)
-            setPrompt("Scan QR for $target")
-            setBeepEnabled(true)
-        }
-        scanLauncher.launch(options)
-    }
-
-    private fun handleQrResult(scanned: String) {
-        when (pendingQrTarget) {
-            "rd" -> { binding.rdApiKeyInput.setText(scanned as CharSequence); save { AppPreferences.setRdApiKey(requireContext(), scanned) }; toast("Real-Debrid scanned") }
-            "torbox" -> { binding.torboxApiKeyInput.setText(scanned as CharSequence); save { AppPreferences.setTorBoxApiKey(requireContext(), scanned) }; toast("TorBox scanned") }
-            "alldebrid" -> { binding.alldebridApiKeyInput.setText(scanned as CharSequence); save { AppPreferences.setAllDebridApiKey(requireContext(), scanned) }; toast("AllDebrid scanned") }
-            "premiumize" -> { binding.premiumizeApiKeyInput.setText(scanned as CharSequence); save { AppPreferences.setPremiumizeApiKey(requireContext(), scanned) }; toast("Premiumize scanned") }
-            "trakt" -> { save { AppPreferences.setTraktAccessToken(requireContext(), scanned) }; toast("Trakt scanned") }
-        }
     }
 
     private fun save(block: suspend () -> Unit) { lifecycleScope.launch { block() } }
