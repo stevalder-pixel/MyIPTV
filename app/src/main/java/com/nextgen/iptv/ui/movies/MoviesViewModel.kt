@@ -37,7 +37,7 @@ class MoviesViewModel : ViewModel() {
     fun load(context: Context) {
         viewModelScope.launch {
             _isLoading.value = true
-            val key = AppPreferences.getTmdbApiKey(context).first()
+            val key = AppPreferences.getTmdbApiKey(context).first().ifEmpty { "0d5f6d8e07ab385be6c228b7950798bf" }
             if (key.isNotEmpty()) {
                 try {
                     val trending = ApiClient.tmdb.getTrendingMovies(key)
