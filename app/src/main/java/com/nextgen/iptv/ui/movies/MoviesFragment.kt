@@ -22,10 +22,10 @@ class MoviesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val trendingAdapter = MediaRowAdapter { item -> DetailFragment.newInstance(item).show(parentFragmentManager, "detail") }
-        val popularAdapter = MediaRowAdapter { item -> DetailFragment.newInstance(item).show(parentFragmentManager, "detail") }
-        val topRatedAdapter = MediaRowAdapter { item -> DetailFragment.newInstance(item).show(parentFragmentManager, "detail") }
-        val watchlistAdapter = MediaRowAdapter { item -> DetailFragment.newInstance(item).show(parentFragmentManager, "detail") }
+        val trendingAdapter = MediaRowAdapter(onItemClick = { item -> DetailFragment.newInstance(item).show(parentFragmentManager, "detail") }
+        val popularAdapter = MediaRowAdapter(onItemClick = { item -> DetailFragment.newInstance(item).show(parentFragmentManager, "detail") }
+        val topRatedAdapter = MediaRowAdapter(onItemClick = { item -> DetailFragment.newInstance(item).show(parentFragmentManager, "detail") }
+        val watchlistAdapter = MediaRowAdapter(onItemClick = { item -> DetailFragment.newInstance(item).show(parentFragmentManager, "detail") }
 
         binding.trendingRow.apply { layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false); adapter = trendingAdapter }
         binding.popularRow.apply { layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false); adapter = popularAdapter }
