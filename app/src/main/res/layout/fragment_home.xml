@@ -7,59 +7,92 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Hero -->
+        <!-- Hero - full screen height -->
         <FrameLayout android:id="@+id/heroContainer"
-            android:layout_width="match_parent" android:layout_height="360dp">
+            android:layout_width="match_parent"
+            android:layout_height="400dp">
+
             <ImageView android:id="@+id/heroBackdrop"
-                android:layout_width="match_parent" android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:scaleType="centerCrop"/>
+
             <View android:layout_width="match_parent" android:layout_height="match_parent"
                 android:background="@drawable/hero_gradient"/>
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_gravity="bottom" android:orientation="vertical"
-                android:padding="24dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start"
+                android:orientation="vertical"
+                android:padding="32dp"
+                android:layout_marginBottom="16dp">
+
                 <TextView android:id="@+id/heroTitle"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:textColor="#FFFFFF" android:textSize="36sp" android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="40sp"
+                    android:textStyle="bold"
                     android:fontFamily="@font/netflix_sans_medium"
-                    android:shadowColor="#99000000" android:shadowDx="1"
-                    android:shadowDy="1" android:shadowRadius="4"/>
+                    android:shadowColor="#99000000"
+                    android:shadowDx="2" android:shadowDy="2" android:shadowRadius="4"/>
+
                 <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:layout_marginTop="8dp"
-                    android:gravity="center_vertical">
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:layout_marginTop="10dp">
                     <TextView android:id="@+id/heroRating"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:background="@drawable/pill_bg" android:paddingHorizontal="10dp"
-                        android:paddingVertical="4dp" android:textColor="#48CAE4"
-                        android:textSize="13sp" android:textStyle="bold"/>
+                        android:background="@drawable/pill_bg"
+                        android:paddingHorizontal="12dp" android:paddingVertical="5dp"
+                        android:textColor="#48CAE4" android:textSize="14sp" android:textStyle="bold"/>
                     <TextView android:id="@+id/heroYear"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:textColor="#B0BEC5" android:textSize="13sp" android:paddingStart="10dp"/>
+                        android:textColor="#B0BEC5" android:textSize="14sp" android:paddingStart="12dp"/>
                 </LinearLayout>
+
                 <TextView android:id="@+id/heroOverview"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp" android:textColor="#B0BEC5"
-                    android:textSize="13sp" android:maxLines="2" android:ellipsize="end"/>
+                    android:layout_width="560dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="#B0BEC5"
+                    android:textSize="14sp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:lineSpacingMultiplier="1.3"/>
+
                 <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:layout_marginTop="16dp">
+                    android:orientation="horizontal" android:layout_marginTop="20dp">
+
                     <Button android:id="@+id/heroPlayBtn"
-                        android:layout_width="140dp" android:layout_height="48dp"
-                        android:text="▶  Play" android:backgroundTint="#48CAE4"
-                        android:textColor="#0A0E1A" android:textStyle="bold" android:textSize="16sp"
-                        android:fontFamily="@font/netflix_sans_medium"/>
+                        android:layout_width="150dp"
+                        android:layout_height="52dp"
+                        android:text="▶  Play"
+                        android:backgroundTint="#48CAE4"
+                        android:textColor="#0A0E1A"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/netflix_sans_medium"
+                        android:layout_marginEnd="16dp"/>
+
                     <Button android:id="@+id/heroInfoBtn"
-                        android:layout_width="140dp" android:layout_height="48dp"
-                        android:layout_marginStart="12dp" android:text="ⓘ  More Info"
+                        android:layout_width="160dp"
+                        android:layout_height="52dp"
+                        android:text="ⓘ  More Info"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:textColor="#FFFFFF" android:textSize="14sp"/>
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"/>
+
                 </LinearLayout>
             </LinearLayout>
         </FrameLayout>
 
         <!-- Watchlist row -->
         <LinearLayout android:id="@+id/watchlistSection"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:visibility="gone">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="My Watchlist" android:textColor="#FFFFFF" android:textSize="20sp"
                 android:textStyle="bold" android:fontFamily="@font/netflix_sans_medium"

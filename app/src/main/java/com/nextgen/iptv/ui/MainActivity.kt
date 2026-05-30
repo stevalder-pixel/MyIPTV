@@ -38,18 +38,17 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, dest, _ ->
             when (dest.id) {
                 R.id.playerActivity -> binding.sidebarContainer.visibility = View.GONE
-                else -> { binding.sidebarContainer.visibility = View.VISIBLE; updateHighlight(dest.id) }
+                else -> {
+                    binding.sidebarContainer.visibility = View.VISIBLE
+                    updateHighlight(dest.id)
+                }
             }
         }
 
-        // Setup Android TV launcher channels
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            lifecycleScope.launch {
-                TvChannelManager.setupChannels(this@MainActivity)
-            }
+            lifecycleScope.launch { TvChannelManager.setupChannels(this@MainActivity) }
         }
 
-        // Handle deep links from TV launcher
         handleIntent(intent)
     }
 
@@ -63,7 +62,6 @@ class MainActivity : AppCompatActivity() {
         when (data.host) {
             "home" -> navigate(R.id.homeFragment)
             "livetv" -> navigate(R.id.liveTvFragment)
-            "watchlist" -> navigate(R.id.homeFragment)
             "play" -> {
                 val streamUrl = data.getQueryParameter("url") ?: return
                 val title = data.getQueryParameter("title") ?: ""
@@ -137,11 +135,32 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean = when (keyCode) {
-        KeyEvent.KEYCODE_DPAD_LEFT -> { if (!sidebarExpanded) { expandSidebar(); true } else super.onKeyDown(keyCode, event) }
-        KeyEvent.KEYCODE_DPAD_RIGHT -> { if (sidebarExpanded) { collapseSidebar(); true } else super.onKeyDown(keyCode, event) }
-        KeyEvent.KEYCODE_MENU -> { if (sidebarExpanded) collapseSidebar() else expandSidebar(); true }
-        KeyEvent.KEYCODE_BACK -> { if (sidebarExpanded) { collapseSidebar(); true } else super.onKeyDown(keyCode, event) }
-        else -> super.onKeyDown(keyCode, event)
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        return when (keyCode) {
+            // Left arrow ALWAYS opens sidebar from anywhere
+            KeyEvent.KEYCODE_DPAD_LEFT -> {
+                if (!sidebarExpanded) { expandSidebar(); true }
+                else super.onKeyDown(keyCode, event)
+            }
+            // Right arrow closes sidebar
+            KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                if (sidebarExpanded) { collapseSidebar(); true }
+                else super.onKeyDown(keyCode, event)
+            }
+            KeyEvent.KEYCODE_MENU -> {
+                if (sidebarExpanded) collapseSidebar() else expandSidebar(); true
+            }
+            // Back button - go to home first, then exit
+            KeyEvent.KEYCODE_BACK -> {
+                when {
+                    sidebarExpanded -> { collapseSidebar(); true }
+                    navController.currentDestination?.id != R.id.homeFragment -> {
+                        navigate(R.id.homeFragment); true
+                    }
+                    else -> super.onKeyDown(keyCode, event)
+                }
+            }
+            else -> super.onKeyDown(keyCode, event)
+        }
     }
 }

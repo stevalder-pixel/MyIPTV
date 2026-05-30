@@ -22,27 +22,15 @@ class MoviesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val trendingAdapter = MediaRowAdapter { item -> viewModel.onItemSelected(item) }
-        val popularAdapter = MediaRowAdapter { item -> viewModel.onItemSelected(item) }
-        val topRatedAdapter = MediaRowAdapter { item -> viewModel.onItemSelected(item) }
-        val watchlistAdapter = MediaRowAdapter { item -> viewModel.onItemSelected(item) }
+        val trendingAdapter = MediaRowAdapter { item -> DetailFragment.newInstance(item).show(parentFragmentManager, "detail") }
+        val popularAdapter = MediaRowAdapter { item -> DetailFragment.newInstance(item).show(parentFragmentManager, "detail") }
+        val topRatedAdapter = MediaRowAdapter { item -> DetailFragment.newInstance(item).show(parentFragmentManager, "detail") }
+        val watchlistAdapter = MediaRowAdapter { item -> DetailFragment.newInstance(item).show(parentFragmentManager, "detail") }
 
-        binding.trendingRow.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = trendingAdapter
-        }
-        binding.popularRow.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = popularAdapter
-        }
-        binding.topRatedRow.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = topRatedAdapter
-        }
-        binding.watchlistRow.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = watchlistAdapter
-        }
+        binding.trendingRow.apply { layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false); adapter = trendingAdapter }
+        binding.popularRow.apply { layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false); adapter = popularAdapter }
+        binding.topRatedRow.apply { layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false); adapter = topRatedAdapter }
+        binding.watchlistRow.apply { layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false); adapter = watchlistAdapter }
 
         viewModel.trendingMovies.observe(viewLifecycleOwner) { trendingAdapter.submitList(it) }
         viewModel.popularMovies.observe(viewLifecycleOwner) { popularAdapter.submitList(it) }
@@ -53,12 +41,6 @@ class MoviesFragment : Fragment() {
         }
         viewModel.isLoading.observe(viewLifecycleOwner) {
             binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
-        }
-        viewModel.navigateToDetail.observe(viewLifecycleOwner) { item ->
-            item?.let {
-                DetailBottomSheet.newInstance(it).show(parentFragmentManager, "detail")
-                viewModel.onNavigationHandled()
-            }
         }
 
         viewModel.load(requireContext())

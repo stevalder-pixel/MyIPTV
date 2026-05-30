@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nextgen.iptv.databinding.FragmentTvShowsBinding
-import com.nextgen.iptv.ui.movies.DetailBottomSheet
+import com.nextgen.iptv.ui.movies.DetailFragment
 import com.nextgen.iptv.ui.movies.MediaRowAdapter
 
 class TvShowsFragment : Fragment() {
@@ -24,10 +24,10 @@ class TvShowsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val trendingAdapter = MediaRowAdapter { viewModel.onItemSelected(it) }
-        val popularAdapter = MediaRowAdapter { viewModel.onItemSelected(it) }
-        val topRatedAdapter = MediaRowAdapter { viewModel.onItemSelected(it) }
-        val watchlistAdapter = MediaRowAdapter { viewModel.onItemSelected(it) }
+        val trendingAdapter = MediaRowAdapter { DetailFragment.newInstance(it).show(parentFragmentManager, "detail") }
+        val popularAdapter = MediaRowAdapter { DetailFragment.newInstance(it).show(parentFragmentManager, "detail") }
+        val topRatedAdapter = MediaRowAdapter { DetailFragment.newInstance(it).show(parentFragmentManager, "detail") }
+        val watchlistAdapter = MediaRowAdapter { DetailFragment.newInstance(it).show(parentFragmentManager, "detail") }
 
         binding.trendingRow.apply { layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false); adapter = trendingAdapter }
         binding.popularRow.apply { layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false); adapter = popularAdapter }
@@ -41,9 +41,8 @@ class TvShowsFragment : Fragment() {
             watchlistAdapter.submitList(items)
             binding.watchlistSection.visibility = if (items.isEmpty()) View.GONE else View.VISIBLE
         }
-        viewModel.isLoading.observe(viewLifecycleOwner) { binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE }
-        viewModel.navigateToDetail.observe(viewLifecycleOwner) { item ->
-            item?.let { DetailBottomSheet.newInstance(it).show(parentFragmentManager, "detail"); viewModel.onNavigationHandled() }
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
         }
 
         viewModel.load(requireContext())

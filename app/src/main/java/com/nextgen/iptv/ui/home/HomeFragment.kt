@@ -12,7 +12,7 @@ import com.nextgen.iptv.data.api.ApiClient
 import com.nextgen.iptv.data.repository.TraktRepository
 import com.nextgen.iptv.databinding.FragmentHomeBinding
 import com.nextgen.iptv.ui.common.MediaItem
-import com.nextgen.iptv.ui.movies.DetailBottomSheet
+import com.nextgen.iptv.ui.movies.DetailFragment
 import com.nextgen.iptv.ui.movies.MediaRowAdapter
 import com.nextgen.iptv.util.AppPreferences
 import kotlinx.coroutines.flow.first
@@ -31,15 +31,17 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val moviesAdapter = MediaRowAdapter { item ->
-            DetailBottomSheet.newInstance(item).show(parentFragmentManager, "detail")
+        // Pre-install Cinemeta if no addons exist
+        lifecycleScope.launch {
+            val addons = AppPreferences.getStremioAddons(requireContext()).first()
+            if (addons.isEmpty()) {
+                AppPreferences.addStremioAddon(requireContext(), "https://v3-cinemeta.strem.io/manifest.json")
+            }
         }
-        val showsAdapter = MediaRowAdapter { item ->
-            DetailBottomSheet.newInstance(item).show(parentFragmentManager, "detail")
-        }
-        val watchlistAdapter = MediaRowAdapter { item ->
-            DetailBottomSheet.newInstance(item).show(parentFragmentManager, "detail")
-        }
+
+        val moviesAdapter = MediaRowAdapter { item -> openDetail(item) }
+        val showsAdapter = MediaRowAdapter { item -> openDetail(item) }
+        val watchlistAdapter = MediaRowAdapter { item -> openDetail(item) }
 
         binding.trendingMoviesRow.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -54,13 +56,8 @@ class HomeFragment : Fragment() {
             adapter = watchlistAdapter
         }
 
-        binding.heroPlayBtn.setOnClickListener {
-            heroItem?.let { DetailBottomSheet.newInstance(it).show(parentFragmentManager, "detail") }
-        }
-
-        binding.heroInfoBtn.setOnClickListener {
-            heroItem?.let { DetailBottomSheet.newInstance(it).show(parentFragmentManager, "detail") }
-        }
+        binding.heroPlayBtn.setOnClickListener { heroItem?.let { openDetail(it) } }
+        binding.heroInfoBtn.setOnClickListener { heroItem?.let { openDetail(it) } }
 
         lifecycleScope.launch {
             val key = AppPreferences.getTmdbApiKey(requireContext()).first()
@@ -71,19 +68,21 @@ class HomeFragment : Fragment() {
                     val movieItems = movies.results.map {
                         MediaItem(it.id, it.title, ApiClient.posterUrl(it.posterPath),
                             ApiClient.backdropUrl(it.backdropPath), it.overview,
-                            it.releaseDate.take(4), it.voteAverage, "movie",
-                            "tt${it.id}")
+                            it.releaseDate.take(4), it.voteAverage, "movie", "tt${it.id}")
                     }
                     moviesAdapter.submitList(movieItems)
 
-                    // Set hero to first trending movie
+                    // Set hero
                     movieItems.firstOrNull()?.let { hero ->
                         heroItem = hero
-                        Glide.with(this@HomeFragment)
-                            .load(hero.backdropUrl)
-                            .into(binding.heroBackdrop)
+                        if (hero.backdropUrl.isNotEmpty()) {
+                            Glide.with(this@HomeFragment)
+                                .load(hero.backdropUrl)
+                                .centerCrop()
+                                .into(binding.heroBackdrop)
+                        }
                         binding.heroTitle.text = hero.title
-                        binding.heroRating.text = "★ ${"%.1f".format(hero.rating)}"
+                        binding.heroRating.text = "★ " + "%.1f".format(hero.rating)
                         binding.heroYear.text = hero.year
                         binding.heroOverview.text = hero.overview
                     }
@@ -94,16 +93,17 @@ class HomeFragment : Fragment() {
                     showsAdapter.submitList(shows.results.map {
                         MediaItem(it.id, it.name, ApiClient.posterUrl(it.posterPath),
                             ApiClient.backdropUrl(it.backdropPath), it.overview,
-                            it.firstAirDate.take(4), it.voteAverage, "series",
-                            "tt${it.id}")
+                            it.firstAirDate.take(4), it.voteAverage, "series", "tt${it.id}")
                     })
                 } catch (e: Exception) { }
             } else {
                 binding.heroTitle.text = "MyIPTV Hub"
                 binding.heroOverview.text = "Add your TMDB API key in Settings to see content"
+                binding.heroRating.visibility = View.GONE
+                binding.heroYear.visibility = View.GONE
             }
 
-            // Load Trakt watchlist
+            // Trakt watchlist
             try {
                 val watchlist = TraktRepository.instance.getWatchlist(requireContext())
                 watchlist.getOrNull()?.let { items ->
@@ -117,6 +117,10 @@ class HomeFragment : Fragment() {
                 }
             } catch (e: Exception) { }
         }
+    }
+
+    private fun openDetail(item: MediaItem) {
+        DetailFragment.newInstance(item).show(parentFragmentManager, "detail")
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }

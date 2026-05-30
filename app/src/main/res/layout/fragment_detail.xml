@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A0E1A">
+
+    <!-- Full backdrop -->
+    <ImageView android:id="@+id/detailBackdrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:alpha="0.4"/>
+
+    <!-- Gradient overlay -->
+    <View android:layout_width="match_parent" android:layout_height="match_parent"
+        android:background="@drawable/hero_gradient"/>
+
+    <!-- Close button -->
+    <ImageButton android:id="@+id/closeBtn"
+        android:layout_width="48dp" android:layout_height="48dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_close"
+        android:tint="#FFFFFF"
+        android:background="?attr/selectableItemBackgroundBorderless"/>
+
+    <!-- Content -->
+    <LinearLayout
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="48dp"
+        android:orientation="vertical">
+
+        <TextView android:id="@+id/detailTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/netflix_sans_medium"
+            android:shadowColor="#99000000"
+            android:shadowDx="2" android:shadowDy="2" android:shadowRadius="4"/>
+
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:layout_marginTop="12dp">
+            <TextView android:id="@+id/detailRating"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:background="@drawable/pill_bg"
+                android:paddingHorizontal="12dp" android:paddingVertical="4dp"
+                android:textColor="#48CAE4" android:textSize="14sp" android:textStyle="bold"/>
+            <TextView android:id="@+id/detailYear"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textColor="#B0BEC5" android:textSize="14sp"
+                android:paddingStart="12dp"/>
+        </LinearLayout>
+
+        <TextView android:id="@+id/detailOverview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="#B0BEC5"
+            android:textSize="15sp"
+            android:maxLines="4"
+            android:ellipsize="end"
+            android:lineSpacingMultiplier="1.4"/>
+
+        <ProgressBar android:id="@+id/loadingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            android:indeterminateTint="#48CAE4"/>
+
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginTop="24dp">
+
+            <Button android:id="@+id/playBtn"
+                android:layout_width="160dp" android:layout_height="52dp"
+                android:text="▶  Play"
+                android:backgroundTint="#48CAE4"
+                android:textColor="#0A0E1A"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:fontFamily="@font/netflix_sans_medium"
+                android:layout_marginEnd="16dp"/>
+
+            <Button android:id="@+id/watchlistBtn"
+                android:layout_width="160dp" android:layout_height="52dp"
+                android:text="+ Watchlist"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>
