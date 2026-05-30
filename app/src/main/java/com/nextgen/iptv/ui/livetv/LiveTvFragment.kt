@@ -27,8 +27,8 @@ class LiveTvFragment : Fragment() {
 
     // TEMP: hardcoded credentials - remove after testing
     private val TEMP_URL = "http://best-streams.tv:80"
-    private val TEMP_USER = "YOUR_USERNAME"
-    private val TEMP_PASS = "YOUR_PASSWORD"
+    private val TEMP_USER = "Rex"
+    private val TEMP_PASS = "123456789"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentLiveTvBinding.inflate(inflater, container, false)
