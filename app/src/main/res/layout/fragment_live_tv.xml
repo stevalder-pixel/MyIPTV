@@ -29,7 +29,7 @@
         <com.nextgen.iptv.ui.livetv.TvFocusRecyclerView
             android:id="@+id/categoryRecycler"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="160dp"
             android:focusable="true"
             android:descendantFocusability="afterDescendants"
             android:nextFocusDown="@+id/channelRecycler"/>
