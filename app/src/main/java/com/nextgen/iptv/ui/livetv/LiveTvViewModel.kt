@@ -21,22 +21,59 @@ class LiveTvViewModel : ViewModel() {
     val error: LiveData<String?> = _error
     private var allChannels = listOf<Channel>()
 
-    fun configure(url: String, user: String, pass: String) = repo.configure(url, user, pass)
+    fun configure(url: String, user: String, pass: String) {
+        repo.configure(url, user, pass)
+    }
 
     fun loadChannels() {
         viewModelScope.launch {
             _isLoading.value = true
+            _error.value = null
             try {
-                repo.getLiveCategories().getOrNull()?.let { _categories.value = it }
-                repo.getLiveStreams().getOrNull()?.let { streams ->
-                    allChannels = streams.map { repo.toChannel(it) }
+                // Test auth first
+                val auth = repo.authenticate()
+                if (auth.isFailure) {
+                    _error.value = "Auth failed: ${auth.exceptionOrNull()?.message}"
+                    _isLoading.value = false
+                    return@launch
+                }
+
+                // Load categories
+                val cats = repo.getLiveCategories()
+                if (cats.isSuccess) {
+                    _categories.value = cats.getOrNull() ?: emptyList()
+                } else {
+                    _error.value = "Categories failed: ${cats.exceptionOrNull()?.message}"
+                    _isLoading.value = false
+                    return@launch
+                }
+
+                // Load streams
+                val streams = repo.getLiveStreams()
+                if (streams.isSuccess) {
+                    val list = streams.getOrNull() ?: emptyList()
+                    allChannels = list.map { repo.toChannel(it) }
                     _channels.value = allChannels
-                } ?: run { _error.value = "Failed to load channels" }
-            } catch (e: Exception) { _error.value = e.message }
+                    if (allChannels.isEmpty()) {
+                        _error.value = "No channels found"
+                    }
+                } else {
+                    _error.value = "Channels failed: ${streams.exceptionOrNull()?.message}"
+                }
+            } catch (e: Exception) {
+                _error.value = "Error: ${e.message}"
+            }
             _isLoading.value = false
         }
     }
 
-    fun filterByCategory(id: String) { _channels.value = if (id == "all") allChannels else allChannels.filter { it.group == id } }
-    fun searchChannels(q: String) { _channels.value = if (q.isEmpty()) allChannels else allChannels.filter { it.name.contains(q, true) } }
+    fun filterByCategory(id: String) {
+        _channels.value = if (id == "all") allChannels
+        else allChannels.filter { it.group == id }
+    }
+
+    fun searchChannels(q: String) {
+        _channels.value = if (q.isEmpty()) allChannels
+        else allChannels.filter { it.name.contains(q, true) }
+    }
 }
