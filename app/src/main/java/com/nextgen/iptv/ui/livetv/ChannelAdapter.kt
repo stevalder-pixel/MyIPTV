@@ -11,7 +11,7 @@ import com.nextgen.iptv.data.models.Channel
 import com.nextgen.iptv.databinding.ItemChannelRowBinding
 
 class ChannelAdapter(
-    private val onChannelFocused: (Channel) -> Unit
+    private val onChannelClick: (Channel) -> Unit
 ) : ListAdapter<Channel, ChannelAdapter.VH>(DIFF) {
 
     private var selectedPosition = -1
@@ -42,14 +42,14 @@ class ChannelAdapter(
                     focusedPosition = pos
                     selectedPosition = pos
                     notifyDataSetChanged()
-                    onChannelFocused(currentList[pos])
+                    onChannelClick(currentList[pos])
                 }
             }
             binding.root.setOnFocusChangeListener { _, hasFocus ->
                 val pos = adapterPosition
                 if (hasFocus && pos >= 0 && pos < currentList.size) {
                     focusedPosition = pos
-                    onChannelFocused(currentList[pos])
+                    onChannelClick(currentList[pos])
                 }
                 val isSelected = pos == selectedPosition
                 binding.root.setBackgroundColor(when {

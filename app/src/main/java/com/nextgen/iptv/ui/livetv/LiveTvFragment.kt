@@ -38,7 +38,7 @@ class LiveTvFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        channelAdapter = ChannelAdapter { channel ->
+        channelAdapter = ChannelAdapter({ channel ->
             binding.nowPlayingChannel.text = channel.name
             binding.nowPlayingTitle.text = "Now Playing"
             if (channel.logo.isNotEmpty()) {
