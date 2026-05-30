@@ -24,10 +24,10 @@ class TvShowsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val trendingAdapter = MediaRowAdapter { DetailFragment.newInstance(it).show(parentFragmentManager, "detail") }
-        val popularAdapter = MediaRowAdapter { DetailFragment.newInstance(it).show(parentFragmentManager, "detail") }
-        val topRatedAdapter = MediaRowAdapter { DetailFragment.newInstance(it).show(parentFragmentManager, "detail") }
-        val watchlistAdapter = MediaRowAdapter { DetailFragment.newInstance(it).show(parentFragmentManager, "detail") }
+        val trendingAdapter = MediaRowAdapter({ DetailFragment.newInstance(it).show(parentFragmentManager, "detail") })
+        val popularAdapter = MediaRowAdapter({ DetailFragment.newInstance(it).show(parentFragmentManager, "detail") })
+        val topRatedAdapter = MediaRowAdapter({ DetailFragment.newInstance(it).show(parentFragmentManager, "detail") })
+        val watchlistAdapter = MediaRowAdapter({ DetailFragment.newInstance(it).show(parentFragmentManager, "detail") })
 
         binding.trendingRow.apply { layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false); adapter = trendingAdapter }
         binding.popularRow.apply { layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false); adapter = popularAdapter }
