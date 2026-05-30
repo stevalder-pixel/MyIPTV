@@ -40,15 +40,13 @@ class HomeFragment : Fragment() {
         }
 
         val moviesAdapter = MediaRowAdapter(
-            onItemClick = { item -> openDetail(item) },
-            onItemFocused = { item -> updateHero(item) }
+            { item -> openDetail(item) }
         )
         val showsAdapter = MediaRowAdapter(
-            onItemClick = { item -> openDetail(item) },
-            onItemFocused = { item -> updateHero(item) }
+            { item -> openDetail(item) }
         )
         val watchlistAdapter = MediaRowAdapter(
-            onItemClick = { item -> openDetail(item) }
+            { item -> openDetail(item) }
         )
 
         binding.trendingMoviesRow.apply {
