@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="com.android.providers.tv.permission.WRITE_EPG_DATA"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-feature android:name="android.hardware.touchscreen" android:required="false"/>
     <uses-feature android:name="android.hardware.microphone" android:required="false"/>
     <uses-feature android:name="android.software.leanback" android:required="true"/>
@@ -25,5 +27,8 @@
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize"
             android:launchMode="singleTop" android:screenOrientation="landscape"
             android:theme="@style/Theme.MyIPTV.Player"/>
+        <service android:name=".tv.TvLauncherService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 </manifest>
