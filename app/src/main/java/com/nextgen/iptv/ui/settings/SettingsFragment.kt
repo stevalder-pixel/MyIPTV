@@ -158,55 +158,9 @@ class SettingsFragment : Fragment() {
     }
 
     private fun startTraktLogin() {
-        lifecycleScope.launch {
-            binding.traktLoginBtn.isEnabled = false
-            binding.traktLoginBtn.text = "Getting code..."
-            try {
-                val codeResult = TraktRepository.instance.getDeviceCode()
-                if (codeResult.isFailure) {
-                    toast("Failed to get Trakt code")
-                    binding.traktLoginBtn.isEnabled = true
-                    binding.traktLoginBtn.text = "Login with Trakt"
-                    return@launch
-                }
-
-                val codeResponse = codeResult.getOrNull()!!
-                binding.traktCodeText.text = "Go to: " + codeResponse.verificationUrl + "
-Enter code: " + codeResponse.userCode
-                binding.traktCodeText.visibility = View.VISIBLE
-                binding.traktLoginBtn.text = "Waiting..."
-
-                // Poll for token
-                var attempts = 0
-                val maxAttempts = codeResponse.expiresIn / codeResponse.interval
-                while (attempts < maxAttempts) {
-                    delay(codeResponse.interval * 1000L)
-                    val tokenResult = TraktRepository.instance.pollDeviceToken(codeResponse.deviceCode)
-                    if (tokenResult.isSuccess) {
-                        val tokens = tokenResult.getOrNull()!!
-                        AppPreferences.setTraktTokens(requireContext(), tokens.accessToken, tokens.refreshToken)
-                        binding.traktStatusText.text = "✓ Connected"
-                        binding.traktStatusText.setTextColor(0xFF48CAE4.toInt())
-                        binding.traktCodeText.visibility = View.GONE
-                        binding.traktLoginBtn.text = "Login with Trakt"
-                        binding.traktLoginBtn.isEnabled = true
-                        toast("Trakt connected!")
-                        return@launch
-                    }
-                    attempts++
-                }
-                toast("Trakt login timed out")
-                binding.traktCodeText.visibility = View.GONE
-                binding.traktLoginBtn.text = "Login with Trakt"
-                binding.traktLoginBtn.isEnabled = true
-            } catch (e: Exception) {
-                toast("Trakt error: ${e.message}")
-                binding.traktLoginBtn.isEnabled = true
-                binding.traktLoginBtn.text = "Login with Trakt"
-            }
-        }
+        toast("Trakt login coming soon")
     }
-
+    
     private fun save(block: suspend () -> Unit) { lifecycleScope.launch { block() } }
     private fun toast(msg: String) = Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
     override fun onDestroyView() { super.onDestroyView(); _binding = null }
