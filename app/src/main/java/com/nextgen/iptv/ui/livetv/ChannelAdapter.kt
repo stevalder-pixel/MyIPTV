@@ -11,10 +11,11 @@ import com.nextgen.iptv.data.models.Channel
 import com.nextgen.iptv.databinding.ItemChannelRowBinding
 
 class ChannelAdapter(
-    private val onChannelClick: (Channel) -> Unit
+    private val onChannelFocused: (Channel) -> Unit
 ) : ListAdapter<Channel, ChannelAdapter.VH>(DIFF) {
 
     private var selectedPosition = -1
+    private var focusedPosition = -1
 
     companion object {
         val DIFF = object : DiffUtil.ItemCallback<Channel>() {
@@ -23,38 +24,40 @@ class ChannelAdapter(
         }
     }
 
+    fun playSelected(onPlay: (Channel) -> Unit) {
+        if (focusedPosition >= 0 && focusedPosition < currentList.size) {
+            selectedPosition = focusedPosition
+            notifyDataSetChanged()
+            onPlay(currentList[focusedPosition])
+        }
+    }
+
     inner class VH(val binding: ItemChannelRowBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.isFocusable = true
             binding.root.isFocusableInTouchMode = true
-
             binding.root.setOnClickListener {
                 val pos = adapterPosition
                 if (pos >= 0 && pos < currentList.size) {
-                    val prev = selectedPosition
+                    focusedPosition = pos
                     selectedPosition = pos
-                    if (prev >= 0) notifyItemChanged(prev)
-                    notifyItemChanged(pos)
-                    onChannelClick(currentList[pos])
+                    notifyDataSetChanged()
+                    onChannelFocused(currentList[pos])
                 }
             }
-
             binding.root.setOnFocusChangeListener { _, hasFocus ->
                 val pos = adapterPosition
+                if (hasFocus && pos >= 0 && pos < currentList.size) {
+                    focusedPosition = pos
+                    onChannelFocused(currentList[pos])
+                }
                 val isSelected = pos == selectedPosition
-                binding.root.setBackgroundColor(
-                    when {
-                        hasFocus -> 0x5548CAE4.toInt()
-                        isSelected -> 0x2248CAE4.toInt()
-                        else -> Color.TRANSPARENT
-                    }
-                )
-                binding.channelName.setTextColor(
-                    when {
-                        hasFocus || isSelected -> 0xFF48CAE4.toInt()
-                        else -> Color.WHITE
-                    }
-                )
+                binding.root.setBackgroundColor(when {
+                    hasFocus -> 0x6648CAE4.toInt()
+                    isSelected -> 0x3348CAE4.toInt()
+                    else -> Color.TRANSPARENT
+                })
+                binding.channelName.setTextColor(if (hasFocus || isSelected) 0xFF48CAE4.toInt() else Color.WHITE)
             }
         }
     }
@@ -67,20 +70,12 @@ class ChannelAdapter(
         val isSelected = position == selectedPosition
         holder.binding.channelName.text = ch.name
         holder.binding.channelNowPlaying.text = ch.nowPlaying
-        holder.binding.root.setBackgroundColor(
-            if (isSelected) 0x2248CAE4.toInt() else Color.TRANSPARENT
-        )
-        holder.binding.channelName.setTextColor(
-            if (isSelected) 0xFF48CAE4.toInt() else Color.WHITE
-        )
+        holder.binding.root.setBackgroundColor(if (isSelected) 0x3348CAE4.toInt() else Color.TRANSPARENT)
+        holder.binding.channelName.setTextColor(if (isSelected) 0xFF48CAE4.toInt() else Color.WHITE)
         if (ch.logo.isNotEmpty()) {
-            Glide.with(holder.binding.channelLogo)
-                .load(ch.logo)
-                .placeholder(android.R.color.transparent)
-                .error(android.R.color.transparent)
+            Glide.with(holder.binding.channelLogo).load(ch.logo)
+                .placeholder(android.R.color.transparent).error(android.R.color.transparent)
                 .into(holder.binding.channelLogo)
-        } else {
-            holder.binding.channelLogo.setImageDrawable(null)
-        }
+        } else holder.binding.channelLogo.setImageDrawable(null)
     }
 }
