@@ -48,7 +48,7 @@ class LiveTvFragment : Fragment() {
                 putExtra(PlayerActivity.EXTRA_STREAM_URL, channel.url)
                 putExtra(PlayerActivity.EXTRA_TITLE, channel.name)
                 putExtra(PlayerActivity.EXTRA_IS_LIVE, true)
-            }
+            })
         }
 
         binding.channelRecycler.apply {
