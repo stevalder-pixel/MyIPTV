@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="12dp"
+    android:background="#1A2235"
+    android:layout_marginBottom="4dp">
+
+    <TextView android:id="@+id/addonUrl"
+        android:layout_width="0dp" android:layout_height="wrap_content"
+        android:layout_weight="1" android:textColor="#B0BEC5"
+        android:textSize="12sp" android:maxLines="2" android:ellipsize="middle"/>
+
+    <Button android:id="@+id/removeBtn"
+        android:layout_width="wrap_content" android:layout_height="32dp"
+        android:text="Remove" android:backgroundTint="#FF4444"
+        android:textSize="11sp" android:textColor="#FFFFFF"/>
+
+</LinearLayout>
