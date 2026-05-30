@@ -14,7 +14,7 @@ class ChannelAdapter(
     private val onChannelClick: (Channel) -> Unit
 ) : ListAdapter<Channel, ChannelAdapter.VH>(DIFF) {
 
-    var selectedId: String = ""
+    private var selectedPosition = RecyclerView.NO_ID.toInt()
 
     companion object {
         val DIFF = object : DiffUtil.ItemCallback<Channel>() {
@@ -28,22 +28,20 @@ class ChannelAdapter(
             binding.root.setOnClickListener {
                 val pos = adapterPosition
                 if (pos >= 0 && pos < currentList.size) {
-                    val channel = currentList[pos]
-                    selectedId = channel.id
-                    notifyDataSetChanged()
-                    onChannelClick(channel)
+                    val prev = selectedPosition
+                    selectedPosition = pos
+                    if (prev >= 0) notifyItemChanged(prev)
+                    notifyItemChanged(pos)
+                    onChannelClick(currentList[pos])
                 }
             }
             binding.root.setOnFocusChangeListener { v, hasFocus ->
-                if (hasFocus) {
-                    v.setBackgroundColor(0x4448CAE4.toInt())
-                    binding.channelName.setTextColor(0xFF48CAE4.toInt())
-                } else {
-                    val pos = adapterPosition
-                    val isSelected = pos >= 0 && pos < currentList.size && currentList[pos].id == selectedId
-                    v.setBackgroundColor(if (isSelected) 0x2248CAE4.toInt() else Color.TRANSPARENT)
-                    binding.channelName.setTextColor(if (isSelected) 0xFF48CAE4.toInt() else Color.WHITE)
-                }
+                v.setBackgroundColor(
+                    if (hasFocus) 0x4448CAE4.toInt() else {
+                        if (adapterPosition == selectedPosition) 0x2248CAE4.toInt()
+                        else Color.TRANSPARENT
+                    }
+                )
             }
         }
     }
@@ -53,7 +51,7 @@ class ChannelAdapter(
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val channel = currentList[position]
-        val isSelected = channel.id == selectedId
+        val isSelected = position == selectedPosition
         holder.binding.channelName.text = channel.name
         holder.binding.channelNowPlaying.text = channel.nowPlaying
         holder.binding.root.setBackgroundColor(

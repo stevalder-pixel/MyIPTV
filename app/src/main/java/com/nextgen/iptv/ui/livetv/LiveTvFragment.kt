@@ -24,11 +24,13 @@ class LiveTvFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: LiveTvViewModel by viewModels()
     private lateinit var channelAdapter: ChannelAdapter
-    private var categoryAdapter: CategoryAdapter? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
+    // TEMP: hardcoded credentials - remove after testing
+    private val TEMP_URL = "http://best-streams.tv:80"
+    private val TEMP_USER = "YOUR_USERNAME"
+    private val TEMP_PASS = "YOUR_PASSWORD"
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentLiveTvBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -37,26 +39,16 @@ class LiveTvFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         channelAdapter = ChannelAdapter { channel ->
-            // Update now playing panel
             binding.nowPlayingChannel.text = channel.name
-            binding.nowPlayingTitle.text = "Tap to play"
-            binding.nowPlayingTime.text = channel.url
-
-            // Load channel logo as backdrop
+            binding.nowPlayingTitle.text = "Now Playing"
             if (channel.logo.isNotEmpty()) {
-                Glide.with(this)
-                    .load(channel.logo)
-                    .centerCrop()
-                    .into(binding.nowPlayingBackdrop)
+                Glide.with(this).load(channel.logo).centerCrop().into(binding.nowPlayingBackdrop)
             }
-
-            // Launch player
-            val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
+            startActivity(Intent(requireContext(), PlayerActivity::class.java).apply {
                 putExtra(PlayerActivity.EXTRA_STREAM_URL, channel.url)
                 putExtra(PlayerActivity.EXTRA_TITLE, channel.name)
                 putExtra(PlayerActivity.EXTRA_IS_LIVE, true)
-            }
-            startActivity(intent)
+            })
         }
 
         binding.channelRecycler.apply {
@@ -67,11 +59,8 @@ class LiveTvFragment : Fragment() {
 
         binding.epgRecycler.layoutManager = LinearLayoutManager(requireContext())
 
-        // Search
         binding.channelSearch.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                viewModel.searchChannels(s?.toString() ?: "")
-            }
+            override fun afterTextChanged(s: Editable?) { viewModel.searchChannels(s?.toString() ?: "") }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -83,17 +72,17 @@ class LiveTvFragment : Fragment() {
     private fun loadChannels() {
         lifecycleScope.launch {
             val ctx = requireContext()
-            val url = AppPreferences.getXtreamUrl(ctx).first()
-            val user = AppPreferences.getXtreamUsername(ctx).first()
-            val pass = AppPreferences.getXtreamPassword(ctx).first()
+            // Try saved credentials first, fall back to hardcoded
+            var url = AppPreferences.getXtreamUrl(ctx).first()
+            var user = AppPreferences.getXtreamUsername(ctx).first()
+            var pass = AppPreferences.getXtreamPassword(ctx).first()
 
-            if (url.isNotEmpty() && user.isNotEmpty()) {
-                viewModel.configure(url, user, pass)
-                viewModel.loadChannels()
-            } else {
-                binding.emptyText.text = "Go to Settings → add your Xtream Codes server"
-                binding.emptyText.visibility = View.VISIBLE
+            if (url.isEmpty()) {
+                url = TEMP_URL; user = TEMP_USER; pass = TEMP_PASS
             }
+
+            viewModel.configure(url, user, pass)
+            viewModel.loadChannels()
         }
     }
 
@@ -106,12 +95,9 @@ class LiveTvFragment : Fragment() {
         viewModel.categories.observe(viewLifecycleOwner) { categories ->
             val list = mutableListOf(Pair("all", "All"))
             list.addAll(categories.map { Pair(it.categoryId, it.categoryName) })
-            categoryAdapter = CategoryAdapter(list) { categoryId ->
-                viewModel.filterByCategory(categoryId)
-            }
             binding.categoryRecycler.apply {
                 layoutManager = LinearLayoutManager(requireContext())
-                adapter = categoryAdapter
+                adapter = CategoryAdapter(list) { viewModel.filterByCategory(it) }
             }
         }
 
@@ -120,15 +106,9 @@ class LiveTvFragment : Fragment() {
         }
 
         viewModel.error.observe(viewLifecycleOwner) { error ->
-            error?.let {
-                binding.emptyText.text = it
-                binding.emptyText.visibility = View.VISIBLE
-            }
+            error?.let { binding.emptyText.text = it; binding.emptyText.visibility = View.VISIBLE }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+    override fun onDestroyView() { super.onDestroyView(); _binding = null }
 }
