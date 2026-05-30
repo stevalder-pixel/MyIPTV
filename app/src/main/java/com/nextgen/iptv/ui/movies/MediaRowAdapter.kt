@@ -1,6 +1,5 @@
 package com.nextgen.iptv.ui.movies
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -11,9 +10,10 @@ import com.nextgen.iptv.databinding.ItemPosterCardBinding
 import com.nextgen.iptv.ui.common.MediaItem
 
 class MediaRowAdapter(
-    private val onItemClick: (MediaItem) -> Unit,
-    private val onItemFocused: ((MediaItem) -> Unit)? = null
+    private val onItemClick: (MediaItem) -> Unit
 ) : ListAdapter<MediaItem, MediaRowAdapter.VH>(DIFF) {
+
+    var onItemFocused: ((MediaItem) -> Unit)? = null
 
     companion object {
         val DIFF = object : DiffUtil.ItemCallback<MediaItem>() {
