@@ -31,7 +31,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Pre-install Cinemeta if no addons exist
+        // Pre-install Cinemeta
         lifecycleScope.launch {
             val addons = AppPreferences.getStremioAddons(requireContext()).first()
             if (addons.isEmpty()) {
@@ -39,9 +39,17 @@ class HomeFragment : Fragment() {
             }
         }
 
-        val moviesAdapter = MediaRowAdapter { item -> openDetail(item) }
-        val showsAdapter = MediaRowAdapter { item -> openDetail(item) }
-        val watchlistAdapter = MediaRowAdapter { item -> openDetail(item) }
+        val moviesAdapter = MediaRowAdapter(
+            onItemClick = { item -> openDetail(item) },
+            onItemFocused = { item -> updateHero(item) }
+        )
+        val showsAdapter = MediaRowAdapter(
+            onItemClick = { item -> openDetail(item) },
+            onItemFocused = { item -> updateHero(item) }
+        )
+        val watchlistAdapter = MediaRowAdapter(
+            onItemClick = { item -> openDetail(item) }
+        )
 
         binding.trendingMoviesRow.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -60,32 +68,19 @@ class HomeFragment : Fragment() {
         binding.heroInfoBtn.setOnClickListener { heroItem?.let { openDetail(it) } }
 
         lifecycleScope.launch {
-            val key = AppPreferences.getTmdbApiKey(requireContext()).first()
+            val savedKey = AppPreferences.getTmdbApiKey(requireContext()).first()
+            val key = savedKey.ifEmpty { ApiClient.TMDB_KEY }
 
-            if (key.isNotEmpty()) {
+            if (key.isNotEmpty() && key != "YOUR_TMDB_KEY_HERE") {
                 try {
                     val movies = ApiClient.tmdb.getTrendingMovies(key)
                     val movieItems = movies.results.map {
                         MediaItem(it.id, it.title, ApiClient.posterUrl(it.posterPath),
                             ApiClient.backdropUrl(it.backdropPath), it.overview,
-                            it.releaseDate.take(4), it.voteAverage, "movie", "tt${it.id}")
+                            it.releaseDate.take(4), it.voteAverage, "movie", "")
                     }
                     moviesAdapter.submitList(movieItems)
-
-                    // Set hero
-                    movieItems.firstOrNull()?.let { hero ->
-                        heroItem = hero
-                        if (hero.backdropUrl.isNotEmpty()) {
-                            Glide.with(this@HomeFragment)
-                                .load(hero.backdropUrl)
-                                .centerCrop()
-                                .into(binding.heroBackdrop)
-                        }
-                        binding.heroTitle.text = hero.title
-                        binding.heroRating.text = "★ " + "%.1f".format(hero.rating)
-                        binding.heroYear.text = hero.year
-                        binding.heroOverview.text = hero.overview
-                    }
+                    movieItems.firstOrNull()?.let { updateHero(it) }
                 } catch (e: Exception) { }
 
                 try {
@@ -93,30 +88,37 @@ class HomeFragment : Fragment() {
                     showsAdapter.submitList(shows.results.map {
                         MediaItem(it.id, it.name, ApiClient.posterUrl(it.posterPath),
                             ApiClient.backdropUrl(it.backdropPath), it.overview,
-                            it.firstAirDate.take(4), it.voteAverage, "series", "tt${it.id}")
+                            it.firstAirDate.take(4), it.voteAverage, "series", "")
                     })
                 } catch (e: Exception) { }
             } else {
                 binding.heroTitle.text = "MyIPTV Hub"
-                binding.heroOverview.text = "Add your TMDB API key in Settings to see content"
-                binding.heroRating.visibility = View.GONE
-                binding.heroYear.visibility = View.GONE
+                binding.heroOverview.text = "Add your TMDB API key in Settings"
             }
 
-            // Trakt watchlist
             try {
-                val watchlist = TraktRepository.instance.getWatchlist(requireContext())
-                watchlist.getOrNull()?.let { items ->
+                TraktRepository.instance.getWatchlist(requireContext()).getOrNull()?.let { items ->
                     if (items.isNotEmpty()) {
                         binding.watchlistSection.visibility = View.VISIBLE
                         watchlistAdapter.submitList(items.map {
-                            MediaItem(it.tmdbId, it.title, "", "",
-                                "", it.year.toString(), 0f, it.type, it.imdbId)
+                            MediaItem(it.tmdbId, it.title, "", "", "",
+                                it.year.toString(), 0f, it.type, it.imdbId)
                         })
                     }
                 }
             } catch (e: Exception) { }
         }
+    }
+
+    private fun updateHero(item: MediaItem) {
+        heroItem = item
+        if (item.backdropUrl.isNotEmpty()) {
+            Glide.with(this).load(item.backdropUrl).centerCrop().into(binding.heroBackdrop)
+        }
+        binding.heroTitle.text = item.title
+        binding.heroRating.text = if (item.rating > 0) "★ " + "%.1f".format(item.rating) else ""
+        binding.heroYear.text = item.year
+        binding.heroOverview.text = item.overview
     }
 
     private fun openDetail(item: MediaItem) {

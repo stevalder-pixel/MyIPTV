@@ -14,7 +14,7 @@ class ChannelAdapter(
     private val onChannelClick: (Channel) -> Unit
 ) : ListAdapter<Channel, ChannelAdapter.VH>(DIFF) {
 
-    private var selectedPosition = RecyclerView.NO_ID.toInt()
+    private var selectedPosition = -1
 
     companion object {
         val DIFF = object : DiffUtil.ItemCallback<Channel>() {
@@ -25,6 +25,9 @@ class ChannelAdapter(
 
     inner class VH(val binding: ItemChannelRowBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
+            binding.root.isFocusable = true
+            binding.root.isFocusableInTouchMode = true
+
             binding.root.setOnClickListener {
                 val pos = adapterPosition
                 if (pos >= 0 && pos < currentList.size) {
@@ -35,11 +38,21 @@ class ChannelAdapter(
                     onChannelClick(currentList[pos])
                 }
             }
-            binding.root.setOnFocusChangeListener { v, hasFocus ->
-                v.setBackgroundColor(
-                    if (hasFocus) 0x4448CAE4.toInt() else {
-                        if (adapterPosition == selectedPosition) 0x2248CAE4.toInt()
-                        else Color.TRANSPARENT
+
+            binding.root.setOnFocusChangeListener { _, hasFocus ->
+                val pos = adapterPosition
+                val isSelected = pos == selectedPosition
+                binding.root.setBackgroundColor(
+                    when {
+                        hasFocus -> 0x5548CAE4.toInt()
+                        isSelected -> 0x2248CAE4.toInt()
+                        else -> Color.TRANSPARENT
+                    }
+                )
+                binding.channelName.setTextColor(
+                    when {
+                        hasFocus || isSelected -> 0xFF48CAE4.toInt()
+                        else -> Color.WHITE
                     }
                 )
             }
@@ -50,19 +63,19 @@ class ChannelAdapter(
         VH(ItemChannelRowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        val channel = currentList[position]
+        val ch = currentList[position]
         val isSelected = position == selectedPosition
-        holder.binding.channelName.text = channel.name
-        holder.binding.channelNowPlaying.text = channel.nowPlaying
+        holder.binding.channelName.text = ch.name
+        holder.binding.channelNowPlaying.text = ch.nowPlaying
         holder.binding.root.setBackgroundColor(
             if (isSelected) 0x2248CAE4.toInt() else Color.TRANSPARENT
         )
         holder.binding.channelName.setTextColor(
             if (isSelected) 0xFF48CAE4.toInt() else Color.WHITE
         )
-        if (channel.logo.isNotEmpty()) {
+        if (ch.logo.isNotEmpty()) {
             Glide.with(holder.binding.channelLogo)
-                .load(channel.logo)
+                .load(ch.logo)
                 .placeholder(android.R.color.transparent)
                 .error(android.R.color.transparent)
                 .into(holder.binding.channelLogo)

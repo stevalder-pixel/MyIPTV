@@ -2,6 +2,7 @@ package com.nextgen.iptv.ui.movies
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.nextgen.iptv.R
+import com.nextgen.iptv.data.api.ApiClient
 import com.nextgen.iptv.data.repository.DebridRepository
 import com.nextgen.iptv.data.repository.StremioRepository
 import com.nextgen.iptv.databinding.FragmentDetailBinding
@@ -55,6 +57,7 @@ class DetailFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val tmdbId = arguments?.getInt("id") ?: 0
         val title = arguments?.getString("title") ?: ""
         val overview = arguments?.getString("overview") ?: ""
         val backdrop = arguments?.getString("backdrop") ?: ""
@@ -62,7 +65,7 @@ class DetailFragment : DialogFragment() {
         val year = arguments?.getString("year") ?: ""
         val rating = arguments?.getFloat("rating") ?: 0f
         val type = arguments?.getString("type") ?: "movie"
-        val stremioId = arguments?.getString("stremio_id") ?: ""
+        var stremioId = arguments?.getString("stremio_id") ?: ""
 
         binding.detailTitle.text = title
         binding.detailOverview.text = overview
@@ -75,32 +78,61 @@ class DetailFragment : DialogFragment() {
         }
 
         binding.closeBtn.setOnClickListener { dismiss() }
+        binding.closeBtn.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+                dismiss(); true
+            } else false
+        }
+
+        // Focus Play button by default
+        binding.playBtn.requestFocus()
 
         binding.playBtn.setOnClickListener {
-            findAndPlay(type, stremioId, title)
+            lifecycleScope.launch {
+                findAndPlay(tmdbId, type, stremioId, title)
+            }
         }
 
         binding.watchlistBtn.setOnClickListener {
             Toast.makeText(requireContext(), "Added to watchlist", Toast.LENGTH_SHORT).show()
         }
+
+        // Fetch real IMDB ID from TMDB
+        lifecycleScope.launch {
+            try {
+                val key = AppPreferences.getTmdbApiKey(requireContext()).first()
+                    .ifEmpty { ApiClient.TMDB_KEY }
+                val ids = if (type == "movie")
+                    ApiClient.tmdb.getMovieExternalIds(tmdbId, key)
+                else
+                    ApiClient.tmdb.getTvExternalIds(tmdbId, key)
+
+                ids.imdbId?.let { imdb ->
+                    if (imdb.isNotEmpty()) stremioId = imdb
+                }
+            } catch (e: Exception) { }
+        }
     }
 
-    private fun findAndPlay(type: String, stremioId: String, title: String) {
+    private suspend fun findAndPlay(tmdbId: Int, type: String, stremioId: String, title: String) {
         binding.playBtn.isEnabled = false
         binding.playBtn.text = "Finding stream..."
         binding.loadingBar.visibility = View.VISIBLE
 
-        lifecycleScope.launch {
-            try {
-                val addons = AppPreferences.getStremioAddons(requireContext()).first()
-                val allAddons = if (addons.isEmpty())
-                    listOf("https://v3-cinemeta.strem.io")
-                else addons.map { it.replace("/manifest.json", "") }
+        try {
+            val addons = AppPreferences.getStremioAddons(requireContext()).first()
+            val addonUrls = if (addons.isEmpty())
+                listOf("https://v3-cinemeta.strem.io")
+            else addons.map { it.replace("/manifest.json", "") }
 
-                var played = false
-                for (addonUrl in allAddons) {
-                    if (played) break
-                    val result = StremioRepository.instance.getStreams(addonUrl, type, stremioId)
+            // Use real IMDB id if available, else tmdb id
+            val searchId = if (stremioId.startsWith("tt")) stremioId else "tmdb:$tmdbId"
+
+            var played = false
+            for (addonUrl in addonUrls) {
+                if (played) break
+                try {
+                    val result = StremioRepository.instance.getStreams(addonUrl, type, searchId)
                     val streams = result.getOrNull()?.streams ?: continue
                     val stream = streams.firstOrNull { it.url.isNotEmpty() }
                         ?: streams.firstOrNull { it.infoHash.isNotEmpty() }
@@ -120,20 +152,22 @@ class DetailFragment : DialogFragment() {
                             played = true
                         }
                     }
-                }
+                } catch (e: Exception) { continue }
+            }
 
-                if (!played) {
-                    binding.playBtn.isEnabled = true
-                    binding.playBtn.text = "▶  Play"
-                    binding.loadingBar.visibility = View.GONE
-                    Toast.makeText(requireContext(), "No streams found — add a Stremio addon in Settings", Toast.LENGTH_LONG).show()
-                }
-            } catch (e: Exception) {
+            if (!played) {
                 binding.playBtn.isEnabled = true
                 binding.playBtn.text = "▶  Play"
                 binding.loadingBar.visibility = View.GONE
-                Toast.makeText(requireContext(), "Error: " + e.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    "No streams found. Make sure your Stremio addon supports this title.",
+                    Toast.LENGTH_LONG).show()
             }
+        } catch (e: Exception) {
+            binding.playBtn.isEnabled = true
+            binding.playBtn.text = "▶  Play"
+            binding.loadingBar.visibility = View.GONE
+            Toast.makeText(requireContext(), "Error: " + e.message, Toast.LENGTH_SHORT).show()
         }
     }
 

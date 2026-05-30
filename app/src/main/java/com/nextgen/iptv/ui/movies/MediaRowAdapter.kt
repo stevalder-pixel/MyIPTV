@@ -11,7 +11,8 @@ import com.nextgen.iptv.databinding.ItemPosterCardBinding
 import com.nextgen.iptv.ui.common.MediaItem
 
 class MediaRowAdapter(
-    private val onItemClick: (MediaItem) -> Unit
+    private val onItemClick: (MediaItem) -> Unit,
+    private val onItemFocused: ((MediaItem) -> Unit)? = null
 ) : ListAdapter<MediaItem, MediaRowAdapter.VH>(DIFF) {
 
     companion object {
@@ -25,12 +26,18 @@ class MediaRowAdapter(
         init {
             binding.root.setOnClickListener {
                 val pos = adapterPosition
-                if (pos >= 0) onItemClick(getItem(pos))
+                if (pos >= 0 && pos < currentList.size) onItemClick(currentList[pos])
             }
             binding.root.setOnFocusChangeListener { v, hasFocus ->
-                v.animate().scaleX(if (hasFocus) 1.05f else 1f)
-                    .scaleY(if (hasFocus) 1.05f else 1f)
+                v.animate().scaleX(if (hasFocus) 1.08f else 1f)
+                    .scaleY(if (hasFocus) 1.08f else 1f)
                     .setDuration(150).start()
+                if (hasFocus) {
+                    val pos = adapterPosition
+                    if (pos >= 0 && pos < currentList.size) {
+                        onItemFocused?.invoke(currentList[pos])
+                    }
+                }
             }
         }
     }
@@ -39,9 +46,9 @@ class MediaRowAdapter(
         VH(ItemPosterCardBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        val item = getItem(position)
+        val item = currentList[position]
         holder.binding.posterTitle.text = item.title
-        holder.binding.posterRating.text = if (item.rating > 0) "★ ${"%.1f".format(item.rating)}" else ""
+        holder.binding.posterRating.text = if (item.rating > 0) "★ " + "%.1f".format(item.rating) else ""
         if (item.posterUrl.isNotEmpty()) {
             Glide.with(holder.binding.posterImage)
                 .load(item.posterUrl)
