@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#111827">
+
+    <FrameLayout android:layout_width="match_parent" android:layout_height="200dp">
+        <ImageView android:id="@+id/detailBackdrop"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:scaleType="centerCrop" android:alpha="0.7"/>
+        <View android:layout_width="match_parent" android:layout_height="match_parent"
+            android:background="@drawable/hero_gradient"/>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_gravity="bottom" android:orientation="vertical" android:padding="16dp">
+            <TextView android:id="@+id/detailTitle"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textColor="#FFFFFF" android:textSize="24sp" android:textStyle="bold"
+                android:fontFamily="@font/netflix_sans_medium"/>
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginTop="4dp">
+                <TextView android:id="@+id/detailYear"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textColor="#B0BEC5" android:textSize="13sp"/>
+                <TextView android:id="@+id/detailRating"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textColor="#48CAE4" android:textSize="13sp" android:paddingStart="12dp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="16dp">
+
+        <TextView android:id="@+id/detailOverview"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="#B0BEC5" android:textSize="14sp" android:maxLines="3"
+            android:ellipsize="end" android:layout_marginBottom="16dp"/>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button android:id="@+id/playBtn"
+                android:layout_width="0dp" android:layout_height="48dp"
+                android:layout_weight="1" android:text="▶  Play"
+                android:backgroundTint="#48CAE4" android:textColor="#0A0E1A"
+                android:textStyle="bold" android:textSize="16sp"
+                android:layout_marginEnd="12dp"
+                android:fontFamily="@font/netflix_sans_medium"/>
+
+            <Button android:id="@+id/watchlistBtn"
+                android:layout_width="0dp" android:layout_height="48dp"
+                android:layout_weight="1" android:text="+ Watchlist"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:textColor="#FFFFFF" android:textSize="14sp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -5,20 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
-import com.nextgen.iptv.data.api.ApiClient
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.nextgen.iptv.databinding.FragmentTvShowsBinding
-import com.nextgen.iptv.ui.home.PosterAdapter
-import com.nextgen.iptv.ui.home.PosterItem
-import com.nextgen.iptv.util.AppPreferences
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import com.nextgen.iptv.ui.movies.DetailBottomSheet
+import com.nextgen.iptv.ui.movies.MediaRowAdapter
 
 class TvShowsFragment : Fragment() {
     private var _binding: FragmentTvShowsBinding? = null
     private val binding get() = _binding!!
-    private val adapter = PosterAdapter()
+    private val viewModel: TvShowsViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentTvShowsBinding.inflate(inflater, container, false)
@@ -27,27 +23,30 @@ class TvShowsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.showsGrid.layoutManager = GridLayoutManager(requireContext(), 5)
-        binding.showsGrid.adapter = adapter
-        binding.showsTabs.addOnTabSelectedListener(object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab?) { when (tab?.position) { 0 -> load("trending"); 1 -> load("popular"); 2 -> load("top") } }
-            override fun onTabUnselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
-            override fun onTabReselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
-        })
-        load("trending")
-    }
 
-    private fun load(type: String) {
-        lifecycleScope.launch {
-            val key = AppPreferences.getTmdbApiKey(requireContext()).first()
-            if (key.isEmpty()) return@launch
-            binding.progressBar.visibility = View.VISIBLE
-            try {
-                val r = when (type) { "popular" -> ApiClient.tmdb.getPopularShows(key).results; "top" -> ApiClient.tmdb.getTopRatedShows(key).results; else -> ApiClient.tmdb.getTrendingShows(key).results }
-                adapter.submitList(r.map { PosterItem(it.id, it.name, ApiClient.posterUrl(it.posterPath), it.voteAverage, true) })
-            } catch (e: Exception) { }
-            binding.progressBar.visibility = View.GONE
+        val trendingAdapter = MediaRowAdapter { viewModel.onItemSelected(it) }
+        val popularAdapter = MediaRowAdapter { viewModel.onItemSelected(it) }
+        val topRatedAdapter = MediaRowAdapter { viewModel.onItemSelected(it) }
+        val watchlistAdapter = MediaRowAdapter { viewModel.onItemSelected(it) }
+
+        binding.trendingRow.apply { layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false); adapter = trendingAdapter }
+        binding.popularRow.apply { layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false); adapter = popularAdapter }
+        binding.topRatedRow.apply { layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false); adapter = topRatedAdapter }
+        binding.watchlistRow.apply { layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false); adapter = watchlistAdapter }
+
+        viewModel.trendingShows.observe(viewLifecycleOwner) { trendingAdapter.submitList(it) }
+        viewModel.popularShows.observe(viewLifecycleOwner) { popularAdapter.submitList(it) }
+        viewModel.topRatedShows.observe(viewLifecycleOwner) { topRatedAdapter.submitList(it) }
+        viewModel.watchlist.observe(viewLifecycleOwner) { items ->
+            watchlistAdapter.submitList(items)
+            binding.watchlistSection.visibility = if (items.isEmpty()) View.GONE else View.VISIBLE
         }
+        viewModel.isLoading.observe(viewLifecycleOwner) { binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE }
+        viewModel.navigateToDetail.observe(viewLifecycleOwner) { item ->
+            item?.let { DetailBottomSheet.newInstance(it).show(parentFragmentManager, "detail"); viewModel.onNavigationHandled() }
+        }
+
+        viewModel.load(requireContext())
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }
