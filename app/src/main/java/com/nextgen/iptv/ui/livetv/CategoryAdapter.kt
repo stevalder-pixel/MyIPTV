@@ -1,5 +1,6 @@
 package com.nextgen.iptv.ui.livetv
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,15 +10,32 @@ class CategoryAdapter(
     private val categories: List<Pair<String, String>>,
     private val onCategoryClick: (String) -> Unit
 ) : RecyclerView.Adapter<CategoryAdapter.VH>() {
-    private var selectedPosition = 0
+
+    var selectedPosition = 0
+
     inner class VH(val binding: ItemCategoryBinding) : RecyclerView.ViewHolder(binding.root) {
-        init { binding.root.setOnClickListener { selectedPosition = adapterPosition; notifyDataSetChanged(); onCategoryClick(categories[adapterPosition].first) } }
+        init {
+            binding.root.setOnClickListener {
+                selectedPosition = adapterPosition
+                notifyDataSetChanged()
+                onCategoryClick(categories[adapterPosition].first)
+            }
+        }
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = VH(ItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        VH(ItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+
     override fun onBindViewHolder(holder: VH, position: Int) {
+        val selected = position == selectedPosition
         holder.binding.categoryName.text = categories[position].second
-        holder.binding.categoryName.setTextColor(if (position == selectedPosition) 0xFF48CAE4.toInt() else 0xFFB0BEC5.toInt())
-        holder.binding.root.setBackgroundColor(if (position == selectedPosition) 0x2248CAE4.toInt() else android.graphics.Color.TRANSPARENT)
+        holder.binding.categoryName.setTextColor(
+            if (selected) 0xFF48CAE4.toInt() else 0xFFB0BEC5.toInt()
+        )
+        holder.binding.root.setBackgroundColor(
+            if (selected) 0x2248CAE4.toInt() else Color.TRANSPARENT
+        )
     }
+
     override fun getItemCount() = categories.size
 }
