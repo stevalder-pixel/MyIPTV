@@ -2,7 +2,6 @@ package com.nextgen.iptv.ui.livetv
 
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -28,15 +27,23 @@ class ChannelAdapter(
         init {
             binding.root.setOnClickListener {
                 val pos = adapterPosition
-                if (pos >= 0) {
-                    val channel = getItem(pos)
+                if (pos >= 0 && pos < currentList.size) {
+                    val channel = currentList[pos]
                     selectedId = channel.id
                     notifyDataSetChanged()
                     onChannelClick(channel)
                 }
             }
-            binding.root.setOnFocusChangeListener { _, hasFocus ->
-                binding.channelPlayIcon.visibility = if (hasFocus) View.VISIBLE else View.INVISIBLE
+            binding.root.setOnFocusChangeListener { v, hasFocus ->
+                if (hasFocus) {
+                    v.setBackgroundColor(0x4448CAE4.toInt())
+                    binding.channelName.setTextColor(0xFF48CAE4.toInt())
+                } else {
+                    val pos = adapterPosition
+                    val isSelected = pos >= 0 && pos < currentList.size && currentList[pos].id == selectedId
+                    v.setBackgroundColor(if (isSelected) 0x2248CAE4.toInt() else Color.TRANSPARENT)
+                    binding.channelName.setTextColor(if (isSelected) 0xFF48CAE4.toInt() else Color.WHITE)
+                }
             }
         }
     }
@@ -45,24 +52,16 @@ class ChannelAdapter(
         VH(ItemChannelRowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        val channel = getItem(position)
+        val channel = currentList[position]
         val isSelected = channel.id == selectedId
-
         holder.binding.channelName.text = channel.name
         holder.binding.channelNowPlaying.text = channel.nowPlaying
-
-        // Highlight selected channel
-        if (isSelected) {
-            holder.binding.root.setBackgroundColor(0x2248CAE4.toInt())
-            holder.binding.channelName.setTextColor(0xFF48CAE4.toInt())
-            holder.binding.channelPlayIcon.visibility = View.VISIBLE
-        } else {
-            holder.binding.root.setBackgroundColor(Color.TRANSPARENT)
-            holder.binding.channelName.setTextColor(Color.WHITE)
-            holder.binding.channelPlayIcon.visibility = View.INVISIBLE
-        }
-
-        // Load logo
+        holder.binding.root.setBackgroundColor(
+            if (isSelected) 0x2248CAE4.toInt() else Color.TRANSPARENT
+        )
+        holder.binding.channelName.setTextColor(
+            if (isSelected) 0xFF48CAE4.toInt() else Color.WHITE
+        )
         if (channel.logo.isNotEmpty()) {
             Glide.with(holder.binding.channelLogo)
                 .load(channel.logo)
