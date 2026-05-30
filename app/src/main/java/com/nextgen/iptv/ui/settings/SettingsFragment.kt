@@ -173,7 +173,6 @@ class SettingsFragment : Fragment() {
                 val codeResponse = codeResult.getOrNull()!!
                 binding.traktCodeText.text = "Go to: " + codeResponse.verificationUrl + "
 Enter code: " + codeResponse.userCode
-Enter code: " + codeResponse.userCode
                 binding.traktCodeText.visibility = View.VISIBLE
                 binding.traktLoginBtn.text = "Waiting..."
 
