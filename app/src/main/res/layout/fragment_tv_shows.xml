@@ -1,57 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="#0A0E1A">
+    <ImageView android:id="@+id/rowBackdrop" android:layout_width="match_parent"
+        android:layout_height="match_parent" android:scaleType="centerCrop" android:alpha="0.3"/>
+    <View android:layout_width="match_parent" android:layout_height="match_parent"
+        android:background="@drawable/hero_gradient"/>
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <LinearLayout android:id="@+id/watchlistSection"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:visibility="gone">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="My Watchlist" android:textColor="#FFFFFF" android:textSize="20sp"
-                android:textStyle="bold" android:paddingStart="16dp" android:paddingTop="20dp"
-                android:paddingBottom="12dp" android:fontFamily="@font/netflix_sans_medium"/>
-            <androidx.recyclerview.widget.RecyclerView android:id="@+id/watchlistRow"
-                android:layout_width="match_parent" android:layout_height="225dp"
-                android:paddingHorizontal="12dp" android:clipToPadding="false"
-                android:orientation="horizontal"/>
-        </LinearLayout>
-
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Trending Shows" android:textColor="#FFFFFF" android:textSize="20sp"
-            android:textStyle="bold" android:paddingStart="16dp" android:paddingTop="20dp"
-            android:paddingBottom="12dp" android:fontFamily="@font/netflix_sans_medium"/>
-        <androidx.recyclerview.widget.RecyclerView android:id="@+id/trendingRow"
-            android:layout_width="match_parent" android:layout_height="225dp"
-            android:paddingHorizontal="12dp" android:clipToPadding="false"
-            android:orientation="horizontal"/>
-
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Popular" android:textColor="#FFFFFF" android:textSize="20sp"
-            android:textStyle="bold" android:paddingStart="16dp" android:paddingTop="20dp"
-            android:paddingBottom="12dp" android:fontFamily="@font/netflix_sans_medium"/>
-        <androidx.recyclerview.widget.RecyclerView android:id="@+id/popularRow"
-            android:layout_width="match_parent" android:layout_height="225dp"
-            android:paddingHorizontal="12dp" android:clipToPadding="false"
-            android:orientation="horizontal"/>
-
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Top Rated" android:textColor="#FFFFFF" android:textSize="20sp"
-            android:textStyle="bold" android:paddingStart="16dp" android:paddingTop="20dp"
-            android:paddingBottom="12dp" android:fontFamily="@font/netflix_sans_medium"/>
-        <androidx.recyclerview.widget.RecyclerView android:id="@+id/topRatedRow"
-            android:layout_width="match_parent" android:layout_height="225dp"
-            android:paddingHorizontal="12dp" android:clipToPadding="false"
-            android:orientation="horizontal"/>
-
-        <ProgressBar android:id="@+id/progressBar"
-            android:layout_width="48dp" android:layout_height="48dp"
-            android:layout_gravity="center" android:visibility="gone"
-            android:indeterminateTint="#48CAE4" android:layout_marginTop="16dp"/>
-
-        <View android:layout_width="match_parent" android:layout_height="32dp"/>
+        android:layout_gravity="bottom" android:orientation="vertical"
+        android:background="#CC0A0E1A">
+        <TextView android:id="@+id/rowLabel" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:textColor="#FFFFFF"
+            android:textSize="18sp" android:textStyle="bold"
+            android:fontFamily="@font/netflix_sans_medium"
+            android:paddingStart="16dp" android:paddingTop="10dp" android:paddingBottom="6dp"/>
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/activeRow"
+            android:layout_width="match_parent" android:layout_height="200dp"
+            android:paddingHorizontal="12dp" android:clipToPadding="false"/>
+        <LinearLayout android:id="@+id/rowIndicators" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
+            android:orientation="horizontal" android:paddingVertical="6dp"/>
+        <ProgressBar android:id="@+id/progressBar" android:layout_width="40dp"
+            android:layout_height="40dp" android:layout_gravity="center"
+            android:visibility="gone" android:indeterminateTint="#48CAE4"/>
     </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+</FrameLayout>
