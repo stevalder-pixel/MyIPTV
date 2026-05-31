@@ -49,11 +49,11 @@ class HomeFragment : Fragment() {
             { item -> openDetail(item) }
         )
 
-        binding.trendingMoviesRow.apply {
+        binding.activeRow.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = moviesAdapter
         }
-        binding.trendingShowsRow.apply {
+        binding.activeRow.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = showsAdapter
         }
@@ -126,10 +126,10 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        _binding?.trendingMoviesRow?.scrollToPosition(0)
-        _binding?.trendingShowsRow?.scrollToPosition(0)
-        _binding?.trendingMoviesRow?.postDelayed({
-            _binding?.trendingMoviesRow?.layoutManager?.findViewByPosition(0)?.requestFocus()
+        _binding?.activeRow?.scrollToPosition(0)
+        _binding?.activeRow?.scrollToPosition(0)
+        _binding?.activeRow?.postDelayed({
+            _binding?.activeRow?.layoutManager?.findViewByPosition(0)?.requestFocus()
         }, 300)
     }
 
