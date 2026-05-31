@@ -22,6 +22,10 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private var heroItem: MediaItem? = null
+    private var trendingMovies = listOf<com.nextgen.iptv.ui.common.MediaItem>()
+    private var trendingShows = listOf<com.nextgen.iptv.ui.common.MediaItem>()
+    private var currentRowIndex = 0
+    private val rowLabels = listOf("Trending Movies", "Trending TV Shows")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -49,9 +53,27 @@ class HomeFragment : Fragment() {
             { item -> openDetail(item) }
         )
 
+        binding.activeRow.setOnKeyListener { _, keyCode, event ->
+            if (event.action == android.view.KeyEvent.ACTION_DOWN) {
+                when (keyCode) {
+                    android.view.KeyEvent.KEYCODE_DPAD_DOWN -> { if (currentRowIndex < rowLabels.size - 1) { currentRowIndex++; showCurrentRow() }; true }
+                    android.view.KeyEvent.KEYCODE_DPAD_UP -> { if (currentRowIndex > 0) { currentRowIndex--; showCurrentRow() }; true }
+                    else -> false
+                }
+            } else false
+        }
         binding.activeRow.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = moviesAdapter
+        }
+        binding.activeRow.setOnKeyListener { _, keyCode, event ->
+            if (event.action == android.view.KeyEvent.ACTION_DOWN) {
+                when (keyCode) {
+                    android.view.KeyEvent.KEYCODE_DPAD_DOWN -> { if (currentRowIndex < rowLabels.size - 1) { currentRowIndex++; showCurrentRow() }; true }
+                    android.view.KeyEvent.KEYCODE_DPAD_UP -> { if (currentRowIndex > 0) { currentRowIndex--; showCurrentRow() }; true }
+                    else -> false
+                }
+            } else false
         }
         binding.activeRow.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -131,6 +153,15 @@ class HomeFragment : Fragment() {
         _binding?.activeRow?.postDelayed({
             _binding?.activeRow?.layoutManager?.findViewByPosition(0)?.requestFocus()
         }, 300)
+    }
+
+
+    private fun showCurrentRow() {
+        _binding?.rowLabel?.text = rowLabels[currentRowIndex]
+        val items = if (currentRowIndex == 0) trendingMovies else trendingShows
+        (_binding?.activeRow?.adapter as? com.nextgen.iptv.ui.movies.MediaRowAdapter)?.submitList(items)
+        _binding?.activeRow?.scrollToPosition(0)
+        items.firstOrNull()?.let { updateHero(it) }
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }
