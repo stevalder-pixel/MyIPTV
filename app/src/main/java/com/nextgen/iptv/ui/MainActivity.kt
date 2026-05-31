@@ -159,9 +159,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return when (keyCode) {
-            // Right arrow closes sidebar
             KeyEvent.KEYCODE_DPAD_LEFT -> {
-                if (!sidebarExpanded) { expandSidebar(); true }
                 else super.onKeyDown(keyCode, event)
             }
             KeyEvent.KEYCODE_DPAD_RIGHT -> {
@@ -171,13 +169,7 @@ class MainActivity : AppCompatActivity() {
             KeyEvent.KEYCODE_MENU -> {
                 if (sidebarExpanded) collapseSidebar() else expandSidebar(); true
             }
-            // Back button - go to home first, then exit
-                    }
-                    else -> super.onKeyDown(keyCode, event)
-                }
-            }
             else -> super.onKeyDown(keyCode, event)
         }
     }
 }
-// nav fix
