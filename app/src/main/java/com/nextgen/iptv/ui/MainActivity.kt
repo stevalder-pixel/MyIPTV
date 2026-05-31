@@ -141,7 +141,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun dispatchKeyEvent(event: android.view.KeyEvent): Boolean {
-        if (event.action == android.view.KeyEvent.ACTION_DOWN) {
+        if (event.action == android.view.KeyEvent.ACTION_DOWN && !sidebarExpanded) {
             val frag = supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.firstOrNull()
             when (event.keyCode) {
                 android.view.KeyEvent.KEYCODE_DPAD_DOWN -> when (frag) {
