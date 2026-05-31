@@ -10,7 +10,7 @@
         <!-- Hero - full screen height -->
         <FrameLayout android:id="@+id/heroContainer"
             android:layout_width="match_parent"
-            android:layout_height="400dp">
+            android:layout_height="320dp">
 
             <ImageView android:id="@+id/heroBackdrop"
                 android:layout_width="match_parent"
