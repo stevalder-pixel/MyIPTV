@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
 
         handleIntent(intent)
         updateHighlight(R.id.homeFragment)
+        binding.navHome.post { focusHomeNav() }
     }
 
     override fun onNewIntent(intent: Intent?) {
