@@ -11,7 +11,7 @@
         android:background="@drawable/hero_gradient"/>
 
     <LinearLayout android:layout_width="560dp" android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start" android:orientation="vertical"
+        android:layout_gravity="center_vertical|start" android:orientation="vertical"
         android:padding="32dp">
         <TextView android:id="@+id/heroTitle" android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:textColor="#FFFFFF"
