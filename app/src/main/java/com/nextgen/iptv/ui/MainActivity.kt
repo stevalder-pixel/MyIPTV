@@ -135,6 +135,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        when {
+            sidebarExpanded -> collapseSidebar()
+            navController.currentDestination?.id != R.id.homeFragment -> navigate(R.id.homeFragment)
+            else -> super.onBackPressed()
+        }
+    }
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return when (keyCode) {
             // Left arrow ALWAYS opens sidebar from anywhere
