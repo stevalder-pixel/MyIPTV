@@ -123,5 +123,11 @@ class HomeFragment : Fragment() {
         DetailFragment.newInstance(item).show(parentFragmentManager, "detail")
     }
 
+    override fun onResume() {
+        super.onResume()
+        _binding?.trendingMoviesRow?.scrollToPosition(0)
+        _binding?.trendingShowsRow?.scrollToPosition(0)
+    }
+
     override fun onDestroyView() { super.onDestroyView(); _binding = null }
 }
