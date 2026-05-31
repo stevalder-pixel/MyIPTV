@@ -102,6 +102,7 @@ class MainActivity : AppCompatActivity() {
             binding.navLiveTvLabel, binding.navSettingsLabel).forEach { it.visibility = View.VISIBLE }
         binding.sidebarOverlay.visibility = View.VISIBLE
         binding.sidebarOverlay.animate().alpha(0.6f).setDuration(220).start()
+        binding.navHome.requestFocus()
     }
 
     fun collapseSidebar() {
