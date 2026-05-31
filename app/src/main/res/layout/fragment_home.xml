@@ -98,7 +98,7 @@
                 android:textStyle="bold" android:fontFamily="@font/netflix_sans_medium"
                 android:paddingStart="16dp" android:paddingTop="24dp" android:paddingBottom="12dp"/>
             <androidx.recyclerview.widget.RecyclerView android:id="@+id/watchlistRow"
-                android:layout_width="match_parent" android:layout_height="225dp"
+                android:layout_width="match_parent" android:layout_height="match_parent"
                 android:paddingHorizontal="12dp" android:clipToPadding="false"
                 android:orientation="horizontal"/>
         </LinearLayout>
@@ -109,7 +109,7 @@
             android:textStyle="bold" android:fontFamily="@font/netflix_sans_medium"
             android:paddingStart="16dp" android:paddingTop="24dp" android:paddingBottom="12dp"/>
         <androidx.recyclerview.widget.RecyclerView android:id="@+id/trendingMoviesRow"
-            android:layout_width="match_parent" android:layout_height="225dp"
+            android:layout_width="match_parent" android:layout_height="match_parent"
             android:paddingHorizontal="12dp" android:clipToPadding="false"
             android:orientation="horizontal"/>
 
@@ -119,7 +119,7 @@
             android:textStyle="bold" android:fontFamily="@font/netflix_sans_medium"
             android:paddingStart="16dp" android:paddingTop="24dp" android:paddingBottom="12dp"/>
         <androidx.recyclerview.widget.RecyclerView android:id="@+id/trendingShowsRow"
-            android:layout_width="match_parent" android:layout_height="225dp"
+            android:layout_width="match_parent" android:layout_height="match_parent"
             android:paddingHorizontal="12dp" android:clipToPadding="false"
             android:orientation="horizontal"/>
 
