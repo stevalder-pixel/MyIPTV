@@ -144,6 +144,7 @@ class MainActivity : AppCompatActivity() {
         if (event.keyCode == android.view.KeyEvent.KEYCODE_BACK && event.action == android.view.KeyEvent.ACTION_UP) {
             if (sidebarExpanded) { collapseSidebar(); return true }
             if (navController.currentDestination?.id != R.id.homeFragment) { navigate(R.id.homeFragment); return true }
+            focusHomeNav()
         }
         return super.dispatchKeyEvent(event)
     }
