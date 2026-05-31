@@ -59,6 +59,9 @@ class HomeFragment : Fragment() {
         loadContent()
     }
 
+    fun nextRow() { goToRow(currentRow + 1) }
+    fun prevRow() { goToRow(currentRow - 1) }
+    fun scrollToFirst() { binding.activeRow.scrollToPosition(0); binding.activeRow.post { binding.activeRow.layoutManager?.findViewByPosition(0)?.requestFocus() } }
     fun goToRow(index: Int) {
         if (index < 0 || index >= allRows.size) return
         currentRow = index
