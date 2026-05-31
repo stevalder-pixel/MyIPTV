@@ -50,7 +50,9 @@ class MoviesFragment : Fragment() {
         loadContent()
     }
 
-    private fun goToRow(i: Int) {
+    fun nextRow() { goToRow(currentRow + 1) }
+    fun prevRow() { goToRow(currentRow - 1) }
+    fun goToRow(i: Int) {
         if (i < 0 || i >= allRows.size) return
         currentRow = i
         binding.rowLabel.text = allRows[i].first
@@ -59,7 +61,7 @@ class MoviesFragment : Fragment() {
         updateDots()
     }
 
-    private fun scrollToFirst() {
+    fun scrollToFirst() {
         binding.activeRow.scrollToPosition(0)
         binding.activeRow.post { binding.activeRow.layoutManager?.findViewByPosition(0)?.requestFocus() }
     }

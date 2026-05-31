@@ -56,7 +56,7 @@ class HomeFragment : Fragment() {
         loadContent()
     }
 
-    private fun goToRow(index: Int) {
+    fun goToRow(index: Int) {
         if (index < 0 || index >= allRows.size) return
         currentRow = index
         val (label, items) = allRows[currentRow]
