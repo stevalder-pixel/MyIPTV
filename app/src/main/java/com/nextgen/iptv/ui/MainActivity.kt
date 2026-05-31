@@ -89,6 +89,8 @@ class MainActivity : AppCompatActivity() {
         collapseSidebar()
     }
 
+    fun focusHomeNav() { binding.navHome.requestFocus() }
+
     fun expandSidebar() {
         if (sidebarExpanded) return
         sidebarExpanded = true
