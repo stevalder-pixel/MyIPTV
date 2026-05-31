@@ -35,6 +35,9 @@ class MoviesFragment : Fragment() {
             if (item.backdropUrl.isNotEmpty())
                 _binding?.let { Glide.with(this).load(item.backdropUrl).centerCrop().into(it.rowBackdrop) }
         }
+        binding.activeRow.onRowDown = { nextRow() }
+        binding.activeRow.onRowUp = { prevRow() }
+        binding.activeRow.onFirstItemBack = { scrollToFirst() }
         binding.activeRow.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = rowAdapter

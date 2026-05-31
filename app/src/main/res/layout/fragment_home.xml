@@ -53,7 +53,7 @@
             android:textSize="18sp" android:textStyle="bold"
             android:fontFamily="@font/netflix_sans_medium"
             android:paddingStart="16dp" android:paddingTop="10dp" android:paddingBottom="6dp"/>
-        <androidx.recyclerview.widget.RecyclerView android:id="@+id/activeRow"
+        <com.nextgen.iptv.ui.common.RowRecyclerView android:id="@+id/activeRow"
             android:layout_width="match_parent" android:layout_height="200dp"
             android:paddingHorizontal="12dp" android:clipToPadding="false"/>
         <LinearLayout android:id="@+id/rowIndicators" android:layout_width="wrap_content"

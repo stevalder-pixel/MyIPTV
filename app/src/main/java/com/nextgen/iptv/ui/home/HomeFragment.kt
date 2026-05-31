@@ -38,6 +38,9 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.activeRow.onRowDown = { nextRow() }
+        binding.activeRow.onRowUp = { prevRow() }
+        binding.activeRow.onFirstItemBack = { scrollToFirst() }
         binding.activeRow.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = rowAdapter
