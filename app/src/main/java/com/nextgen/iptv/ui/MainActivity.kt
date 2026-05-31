@@ -172,11 +172,6 @@ class MainActivity : AppCompatActivity() {
                 if (sidebarExpanded) collapseSidebar() else expandSidebar(); true
             }
             // Back button - go to home first, then exit
-            KeyEvent.KEYCODE_BACK -> {
-                when {
-                    sidebarExpanded -> { collapseSidebar(); true }
-                    navController.currentDestination?.id != R.id.homeFragment -> {
-                        navigate(R.id.homeFragment); true
                     }
                     else -> super.onKeyDown(keyCode, event)
                 }
