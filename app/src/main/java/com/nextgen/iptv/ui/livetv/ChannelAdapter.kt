@@ -49,7 +49,6 @@ class ChannelAdapter(
                 val pos = adapterPosition
                 if (hasFocus && pos >= 0 && pos < currentList.size) {
                     focusedPosition = pos
-                    onChannelClick(currentList[pos])
                 }
                 val isSelected = pos == selectedPosition
                 binding.root.setBackgroundColor(when {
