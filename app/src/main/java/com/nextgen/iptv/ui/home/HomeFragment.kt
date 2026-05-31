@@ -123,6 +123,18 @@ class HomeFragment : Fragment() {
         DetailFragment.newInstance(item).show(parentFragmentManager, "detail")
     }
 
+    override fun onViewCreated(view: android.view.View, savedInstanceState: android.os.Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.isFocusableInTouchMode = true
+        view.requestFocus()
+        view.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == android.view.KeyEvent.KEYCODE_BACK && event.action == android.view.KeyEvent.ACTION_UP) {
+                _binding?.trendingMoviesRow?.layoutManager?.findViewByPosition(0)?.requestFocus()
+                true
+            } else false
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         _binding?.trendingMoviesRow?.scrollToPosition(0)
