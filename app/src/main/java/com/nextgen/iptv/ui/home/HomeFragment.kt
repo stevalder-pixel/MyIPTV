@@ -130,7 +130,6 @@ class HomeFragment : Fragment() {
         _binding?.trendingMoviesRow?.postDelayed({
             _binding?.trendingMoviesRow?.layoutManager?.findViewByPosition(0)?.requestFocus()
         }, 300)
-        }
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }
