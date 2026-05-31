@@ -137,6 +137,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun dispatchKeyEvent(event: android.view.KeyEvent): Boolean {
+        if (event.keyCode == android.view.KeyEvent.KEYCODE_BACK && event.action == android.view.KeyEvent.ACTION_UP) {
+            if (sidebarExpanded) { collapseSidebar(); return true }
+            if (navController.currentDestination?.id != R.id.homeFragment) { navigate(R.id.homeFragment); return true }
+        }
+        return super.dispatchKeyEvent(event)
+    }
+
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         when {
