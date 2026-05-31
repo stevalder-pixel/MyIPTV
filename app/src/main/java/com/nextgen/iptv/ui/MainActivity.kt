@@ -146,11 +146,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return when (keyCode) {
-            // Left arrow ALWAYS opens sidebar from anywhere
-            KeyEvent.KEYCODE_DPAD_LEFT -> {
-                if (!sidebarExpanded) { expandSidebar(); true }
-                else super.onKeyDown(keyCode, event)
-            }
             // Right arrow closes sidebar
             KeyEvent.KEYCODE_DPAD_RIGHT -> {
                 if (sidebarExpanded) { collapseSidebar(); true }
