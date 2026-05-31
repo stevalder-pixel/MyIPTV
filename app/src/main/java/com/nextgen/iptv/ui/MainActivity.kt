@@ -141,6 +141,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun dispatchKeyEvent(event: android.view.KeyEvent): Boolean {
+        if (event.action == android.view.KeyEvent.ACTION_DOWN) {
+            val frag = supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.firstOrNull()
+            when (event.keyCode) {
+                android.view.KeyEvent.KEYCODE_DPAD_DOWN -> when (frag) {
+                    is com.nextgen.iptv.ui.home.HomeFragment -> { frag.nextRow(); return true }
+                    is com.nextgen.iptv.ui.movies.MoviesFragment -> { frag.nextRow(); return true }
+                    is com.nextgen.iptv.ui.tv.TvShowsFragment -> { frag.nextRow(); return true }
+                }
+                android.view.KeyEvent.KEYCODE_DPAD_UP -> when (frag) {
+                    is com.nextgen.iptv.ui.home.HomeFragment -> { frag.prevRow(); return true }
+                    is com.nextgen.iptv.ui.movies.MoviesFragment -> { frag.prevRow(); return true }
+                    is com.nextgen.iptv.ui.tv.TvShowsFragment -> { frag.prevRow(); return true }
+                }
+            }
+        }
         if (event.keyCode == android.view.KeyEvent.KEYCODE_BACK && event.action == android.view.KeyEvent.ACTION_UP) {
             if (sidebarExpanded) { collapseSidebar(); return true }
             if (navController.currentDestination?.id != R.id.homeFragment) { navigate(R.id.homeFragment); return true }
