@@ -160,7 +160,8 @@ class MainActivity : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return when (keyCode) {
             KeyEvent.KEYCODE_DPAD_LEFT -> {
-                else super.onKeyDown(keyCode, event)
+                if (sidebarExpanded.not()) { expandSidebar(); return true }
+                else return super.onKeyDown(keyCode, event)
             }
             KeyEvent.KEYCODE_DPAD_RIGHT -> {
                 if (sidebarExpanded) { collapseSidebar(); true }
