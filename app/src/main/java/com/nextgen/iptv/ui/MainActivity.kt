@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         handleIntent(intent)
+        updateHighlight(R.id.homeFragment)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -76,6 +77,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupNavigation() {
         binding.navHome.setOnClickListener { navigate(R.id.homeFragment) }
+        binding.navHomeIcon.setColorFilter(getColor(R.color.accent_blue))
         binding.navMovies.setOnClickListener { navigate(R.id.moviesFragment) }
         binding.navTvShows.setOnClickListener { navigate(R.id.tvShowsFragment) }
         binding.navLiveTv.setOnClickListener { navigate(R.id.liveTvFragment) }

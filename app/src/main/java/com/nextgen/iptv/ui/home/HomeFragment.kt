@@ -127,6 +127,9 @@ class HomeFragment : Fragment() {
         super.onResume()
         _binding?.trendingMoviesRow?.scrollToPosition(0)
         _binding?.trendingShowsRow?.scrollToPosition(0)
+        _binding?.trendingMoviesRow?.post {
+            _binding?.trendingMoviesRow?.layoutManager?.findViewByPosition(0)?.requestFocus()
+        }
     }
 
     override fun onDestroyView() { super.onDestroyView(); _binding = null }
