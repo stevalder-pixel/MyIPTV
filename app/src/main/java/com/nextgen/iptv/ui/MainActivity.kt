@@ -160,7 +160,7 @@ class MainActivity : AppCompatActivity() {
         if (event.keyCode == android.view.KeyEvent.KEYCODE_BACK && event.action == android.view.KeyEvent.ACTION_UP) {
             if (sidebarExpanded) { collapseSidebar(); return true }
             if (navController.currentDestination?.id != R.id.homeFragment) { navigate(R.id.homeFragment); return true }
-            val frag = supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.firstOrNull(); if (frag is com.nextgen.iptv.ui.home.HomeFragment) { frag.scrollToFirst(); return true }; return true
+            focusHomeNav(); return true
         }
         return super.dispatchKeyEvent(event)
     }
