@@ -12,11 +12,12 @@
         android:background="@drawable/hero_gradient"/>
 
     <LinearLayout android:layout_width="560dp" android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|start" android:orientation="vertical"
-        android:padding="32dp">
+        android:layout_gravity="top|start" android:orientation="vertical"
+        android:padding="24dp"
+        android:paddingTop="16dp">
         <TextView android:id="@+id/heroTitle" android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:textColor="#FFFFFF"
-            android:textSize="36sp" android:textStyle="bold"
+            android:textSize="28sp" android:textStyle="bold"
             android:fontFamily="@font/netflix_sans_medium"/>
         <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:orientation="horizontal" android:gravity="center_vertical"
@@ -31,7 +32,7 @@
         </LinearLayout>
         <TextView android:id="@+id/heroOverview" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:layout_marginTop="8dp"
-            android:textColor="#B0BEC5" android:textSize="13sp" android:maxLines="2"
+            android:textColor="#B0BEC5" android:textSize="13sp" android:maxLines="1"
             android:ellipsize="end"/>
         <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:orientation="horizontal" android:layout_marginTop="16dp">
