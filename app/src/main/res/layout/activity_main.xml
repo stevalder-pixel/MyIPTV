@@ -62,7 +62,7 @@
                 android:visibility="gone"/>
         </FrameLayout>
 
-        <View android:layout_width="36dp" android:layout_height="1dp"
+        <View android:focusable="false" android:layout_width="36dp" android:layout_height="1dp"
             android:layout_gravity="center_horizontal"
             android:background="#2248CAE4" android:layout_marginBottom="8dp"/>
 
@@ -122,9 +122,9 @@
                 android:paddingStart="16dp" android:visibility="gone"/>
         </LinearLayout>
 
-        <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"/>
+        <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:focusable="false"/>
 
-        <View android:layout_width="36dp" android:layout_height="1dp"
+        <View android:focusable="false" android:layout_width="36dp" android:layout_height="1dp"
             android:layout_gravity="center_horizontal"
             android:background="#2248CAE4" android:layout_marginBottom="8dp"/>
 
