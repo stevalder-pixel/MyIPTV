@@ -13,11 +13,11 @@
 
     <LinearLayout android:layout_width="560dp" android:layout_height="wrap_content"
         android:layout_gravity="top|start" android:orientation="vertical"
-        android:padding="24dp"
-        android:paddingTop="16dp">
+        android:padding="16dp"
+        android:paddingTop="8dp">
         <TextView android:id="@+id/heroTitle" android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:textColor="#FFFFFF"
-            android:textSize="28sp" android:textStyle="bold"
+            android:textSize="22sp" android:textStyle="bold"
             android:fontFamily="@font/netflix_sans_medium"/>
         <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:orientation="horizontal" android:gravity="center_vertical"
@@ -32,16 +32,16 @@
         </LinearLayout>
         <TextView android:id="@+id/heroOverview" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:layout_marginTop="8dp"
-            android:textColor="#B0BEC5" android:textSize="13sp" android:maxLines="1"
+            android:textColor="#B0BEC5" android:textSize="13sp" android:maxLines="2"
             android:ellipsize="end"/>
         <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:orientation="horizontal" android:layout_marginTop="16dp">
             <Button android:id="@+id/heroPlayBtn" android:layout_width="140dp"
-                android:layout_height="48dp" android:text="Play"
+                android:layout_height="40dp" android:text="Play"
                 android:backgroundTint="#48CAE4" android:textColor="#0A0E1A"
                 android:textStyle="bold" android:layout_marginEnd="12dp"/>
             <Button android:id="@+id/heroInfoBtn" android:layout_width="140dp"
-                android:layout_height="48dp" android:text="More Info"
+                android:layout_height="40dp" android:text="More Info"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:textColor="#FFFFFF"/>
         </LinearLayout>
